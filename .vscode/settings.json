@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "memory": "cpp",
+        "functional": "cpp",
+        "atomic": "cpp",
+        "cstdint": "cpp",
+        "array": "cpp",
+        "thread": "cpp",
+        "*.tcc": "cpp"
+    }
+}
