@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package game;
+
+message Card {
+    uint32 num = 1;
+    uint32 suit = 2;
+}
+
+message Deck {
+    repeated Card cards = 1 ;
+}
+
+message Player {
+    uint32 id = 1;
+    uint32 balance = 2;
+    string name = 3;
+
+}
+
+message StartGameRequest {
+    uint32 id = 1;
+
+}
+
+// Server-side message
+message StartGame {
+    uint32 dealer_id = 1;
+    uint32 big_blind_id = 2;
+    uint32 small_blind_id = 3;
+
+}
+
+message DealCards {
+    repeated Card cards = 1;
+}
+
+message DealCommunityCards {
+    repeated Card cards = 1;
+}
+
+message Result {
+    message EndPlayer {
+        Player player = 1;
+        repeated Card cards = 2;
+    }
+    repeated EndPlayer end_players = 1;
+    uint32 winner_id = 2;
+    uint32 prize = 3;
+}
+
+message BetTurn {
+    uint32 player_id = 1;
+    uint32 amount = 2;
+    uint32 balance = 3;
+    uint32 state = 4; 
+}
+
+message DoneBet {
+    uint32 player_id = 1; //id of player who just bet
+    uint32 bet_amount = 2; 
+    uint32 player_amount = 3; // that player's money left
+}
+
+message EndRound {
+    uint32 total_amount = 1; // total bet amount on board
+}
+
+// Client-side message
+message ClientBet {
+    uint32 decision = 1;
+    uint32 amount = 2;
+}
+
