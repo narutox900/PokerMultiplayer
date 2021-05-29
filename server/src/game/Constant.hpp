@@ -2,5 +2,5 @@
 #include <sys/types.h>
 
 namespace game {
-constexpr uint g_maxPlayerCount = 5;
+constexpr int g_maxPlayerCount = 5;
 }

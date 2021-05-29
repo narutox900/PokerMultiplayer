@@ -99,7 +99,7 @@ void Client::start() {
                 }
                 case 5: {
                     if (m_roomID != -1 || m_clientID != -1) {
-                        send(m_gameSocket.socketFd(),"test\n",7,0);
+                        send(m_gameSocket.socketFd(), "test\n", 7, 0);
                     }
                 }
                 default:
@@ -147,7 +147,7 @@ void Client::start() {
             if (read == 0) {
                 break;
             }
-            printf("Read %ld bytes from game sv\n",read);
+            printf("Read %ld bytes from game sv\n", read);
         }
     }
 }

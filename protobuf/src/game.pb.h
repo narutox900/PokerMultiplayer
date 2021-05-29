@@ -88,12 +88,12 @@ extern ResultDefaultTypeInternal _Result_default_instance_;
 class Result_EndPlayer;
 struct Result_EndPlayerDefaultTypeInternal;
 extern Result_EndPlayerDefaultTypeInternal _Result_EndPlayer_default_instance_;
-class StartGame;
-struct StartGameDefaultTypeInternal;
-extern StartGameDefaultTypeInternal _StartGame_default_instance_;
 class StartGameRequest;
 struct StartGameRequestDefaultTypeInternal;
 extern StartGameRequestDefaultTypeInternal _StartGameRequest_default_instance_;
+class StartGameResponse;
+struct StartGameResponseDefaultTypeInternal;
+extern StartGameResponseDefaultTypeInternal _StartGameResponse_default_instance_;
 }  // namespace game
 PROTOBUF_NAMESPACE_OPEN
 template<> ::game::BetTurn* Arena::CreateMaybeMessage<::game::BetTurn>(Arena*);
@@ -107,8 +107,8 @@ template<> ::game::EndRound* Arena::CreateMaybeMessage<::game::EndRound>(Arena*)
 template<> ::game::Player* Arena::CreateMaybeMessage<::game::Player>(Arena*);
 template<> ::game::Result* Arena::CreateMaybeMessage<::game::Result>(Arena*);
 template<> ::game::Result_EndPlayer* Arena::CreateMaybeMessage<::game::Result_EndPlayer>(Arena*);
-template<> ::game::StartGame* Arena::CreateMaybeMessage<::game::StartGame>(Arena*);
 template<> ::game::StartGameRequest* Arena::CreateMaybeMessage<::game::StartGameRequest>(Arena*);
+template<> ::game::StartGameResponse* Arena::CreateMaybeMessage<::game::StartGameResponse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace game {
 
@@ -227,16 +227,16 @@ class Card PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kNumFieldNumber = 1,
+    kValueFieldNumber = 1,
     kSuitFieldNumber = 2,
   };
-  // uint32 num = 1;
-  void clear_num();
-  ::PROTOBUF_NAMESPACE_ID::uint32 num() const;
-  void set_num(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  // uint32 value = 1;
+  void clear_value();
+  ::PROTOBUF_NAMESPACE_ID::uint32 value() const;
+  void set_value(::PROTOBUF_NAMESPACE_ID::uint32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_num() const;
-  void _internal_set_num(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_value() const;
+  void _internal_set_value(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
   // uint32 suit = 2;
@@ -255,7 +255,7 @@ class Card PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 num_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 value_;
   ::PROTOBUF_NAMESPACE_ID::uint32 suit_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_game_2eproto;
@@ -524,6 +524,7 @@ class Player PROTOBUF_FINAL :
     kNameFieldNumber = 3,
     kIdFieldNumber = 1,
     kBalanceFieldNumber = 2,
+    kStatusFieldNumber = 4,
   };
   // string name = 3;
   void clear_name();
@@ -559,6 +560,15 @@ class Player PROTOBUF_FINAL :
   void _internal_set_balance(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
+  // uint32 status = 4;
+  void clear_status();
+  ::PROTOBUF_NAMESPACE_ID::uint32 status() const;
+  void set_status(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_status() const;
+  void _internal_set_status(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:game.Player)
  private:
   class _Internal;
@@ -569,6 +579,7 @@ class Player PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
   ::PROTOBUF_NAMESPACE_ID::uint32 id_;
   ::PROTOBUF_NAMESPACE_ID::uint32 balance_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 status_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_game_2eproto;
 };
@@ -711,24 +722,24 @@ class StartGameRequest PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class StartGame PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:game.StartGame) */ {
+class StartGameResponse PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:game.StartGameResponse) */ {
  public:
-  inline StartGame() : StartGame(nullptr) {}
-  virtual ~StartGame();
-  explicit constexpr StartGame(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline StartGameResponse() : StartGameResponse(nullptr) {}
+  virtual ~StartGameResponse();
+  explicit constexpr StartGameResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  StartGame(const StartGame& from);
-  StartGame(StartGame&& from) noexcept
-    : StartGame() {
+  StartGameResponse(const StartGameResponse& from);
+  StartGameResponse(StartGameResponse&& from) noexcept
+    : StartGameResponse() {
     *this = ::std::move(from);
   }
 
-  inline StartGame& operator=(const StartGame& from) {
+  inline StartGameResponse& operator=(const StartGameResponse& from) {
     CopyFrom(from);
     return *this;
   }
-  inline StartGame& operator=(StartGame&& from) noexcept {
+  inline StartGameResponse& operator=(StartGameResponse&& from) noexcept {
     if (GetArena() == from.GetArena()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -746,20 +757,20 @@ class StartGame PROTOBUF_FINAL :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const StartGame& default_instance() {
+  static const StartGameResponse& default_instance() {
     return *internal_default_instance();
   }
-  static inline const StartGame* internal_default_instance() {
-    return reinterpret_cast<const StartGame*>(
-               &_StartGame_default_instance_);
+  static inline const StartGameResponse* internal_default_instance() {
+    return reinterpret_cast<const StartGameResponse*>(
+               &_StartGameResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     4;
 
-  friend void swap(StartGame& a, StartGame& b) {
+  friend void swap(StartGameResponse& a, StartGameResponse& b) {
     a.Swap(&b);
   }
-  inline void Swap(StartGame* other) {
+  inline void Swap(StartGameResponse* other) {
     if (other == this) return;
     if (GetArena() == other->GetArena()) {
       InternalSwap(other);
@@ -767,7 +778,7 @@ class StartGame PROTOBUF_FINAL :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(StartGame* other) {
+  void UnsafeArenaSwap(StartGameResponse* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -775,17 +786,17 @@ class StartGame PROTOBUF_FINAL :
 
   // implements Message ----------------------------------------------
 
-  inline StartGame* New() const final {
-    return CreateMaybeMessage<StartGame>(nullptr);
+  inline StartGameResponse* New() const final {
+    return CreateMaybeMessage<StartGameResponse>(nullptr);
   }
 
-  StartGame* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<StartGame>(arena);
+  StartGameResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<StartGameResponse>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const StartGame& from);
-  void MergeFrom(const StartGame& from);
+  void CopyFrom(const StartGameResponse& from);
+  void MergeFrom(const StartGameResponse& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -799,13 +810,13 @@ class StartGame PROTOBUF_FINAL :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(StartGame* other);
+  void InternalSwap(StartGameResponse* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "game.StartGame";
+    return "game.StartGameResponse";
   }
   protected:
-  explicit StartGame(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit StartGameResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   private:
   static void ArenaDtor(void* object);
   inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
@@ -824,10 +835,29 @@ class StartGame PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kPlayersFieldNumber = 4,
     kDealerIdFieldNumber = 1,
     kBigBlindIdFieldNumber = 2,
     kSmallBlindIdFieldNumber = 3,
   };
+  // repeated .game.Player players = 4;
+  int players_size() const;
+  private:
+  int _internal_players_size() const;
+  public:
+  void clear_players();
+  ::game::Player* mutable_players(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::game::Player >*
+      mutable_players();
+  private:
+  const ::game::Player& _internal_players(int index) const;
+  ::game::Player* _internal_add_players();
+  public:
+  const ::game::Player& players(int index) const;
+  ::game::Player* add_players();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::game::Player >&
+      players() const;
+
   // uint32 dealer_id = 1;
   void clear_dealer_id();
   ::PROTOBUF_NAMESPACE_ID::uint32 dealer_id() const;
@@ -855,13 +885,14 @@ class StartGame PROTOBUF_FINAL :
   void _internal_set_small_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
-  // @@protoc_insertion_point(class_scope:game.StartGame)
+  // @@protoc_insertion_point(class_scope:game.StartGameResponse)
  private:
   class _Internal;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::game::Player > players_;
   ::PROTOBUF_NAMESPACE_ID::uint32 dealer_id_;
   ::PROTOBUF_NAMESPACE_ID::uint32 big_blind_id_;
   ::PROTOBUF_NAMESPACE_ID::uint32 small_blind_id_;
@@ -2121,24 +2152,24 @@ class ClientBet PROTOBUF_FINAL :
 #endif  // __GNUC__
 // Card
 
-// uint32 num = 1;
-inline void Card::clear_num() {
-  num_ = 0u;
+// uint32 value = 1;
+inline void Card::clear_value() {
+  value_ = 0u;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Card::_internal_num() const {
-  return num_;
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Card::_internal_value() const {
+  return value_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Card::num() const {
-  // @@protoc_insertion_point(field_get:game.Card.num)
-  return _internal_num();
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Card::value() const {
+  // @@protoc_insertion_point(field_get:game.Card.value)
+  return _internal_value();
 }
-inline void Card::_internal_set_num(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void Card::_internal_set_value(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   
-  num_ = value;
+  value_ = value;
 }
-inline void Card::set_num(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_num(value);
-  // @@protoc_insertion_point(field_set:game.Card.num)
+inline void Card::set_value(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_value(value);
+  // @@protoc_insertion_point(field_set:game.Card.value)
 }
 
 // uint32 suit = 2;
@@ -2309,6 +2340,26 @@ inline void Player::set_allocated_name(std::string* name) {
   // @@protoc_insertion_point(field_set_allocated:game.Player.name)
 }
 
+// uint32 status = 4;
+inline void Player::clear_status() {
+  status_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Player::_internal_status() const {
+  return status_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Player::status() const {
+  // @@protoc_insertion_point(field_get:game.Player.status)
+  return _internal_status();
+}
+inline void Player::_internal_set_status(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  status_ = value;
+}
+inline void Player::set_status(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_status(value);
+  // @@protoc_insertion_point(field_set:game.Player.status)
+}
+
 // -------------------------------------------------------------------
 
 // StartGameRequest
@@ -2335,66 +2386,105 @@ inline void StartGameRequest::set_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
 
 // -------------------------------------------------------------------
 
-// StartGame
+// StartGameResponse
 
 // uint32 dealer_id = 1;
-inline void StartGame::clear_dealer_id() {
+inline void StartGameResponse::clear_dealer_id() {
   dealer_id_ = 0u;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGame::_internal_dealer_id() const {
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGameResponse::_internal_dealer_id() const {
   return dealer_id_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGame::dealer_id() const {
-  // @@protoc_insertion_point(field_get:game.StartGame.dealer_id)
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGameResponse::dealer_id() const {
+  // @@protoc_insertion_point(field_get:game.StartGameResponse.dealer_id)
   return _internal_dealer_id();
 }
-inline void StartGame::_internal_set_dealer_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void StartGameResponse::_internal_set_dealer_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   
   dealer_id_ = value;
 }
-inline void StartGame::set_dealer_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void StartGameResponse::set_dealer_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   _internal_set_dealer_id(value);
-  // @@protoc_insertion_point(field_set:game.StartGame.dealer_id)
+  // @@protoc_insertion_point(field_set:game.StartGameResponse.dealer_id)
 }
 
 // uint32 big_blind_id = 2;
-inline void StartGame::clear_big_blind_id() {
+inline void StartGameResponse::clear_big_blind_id() {
   big_blind_id_ = 0u;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGame::_internal_big_blind_id() const {
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGameResponse::_internal_big_blind_id() const {
   return big_blind_id_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGame::big_blind_id() const {
-  // @@protoc_insertion_point(field_get:game.StartGame.big_blind_id)
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGameResponse::big_blind_id() const {
+  // @@protoc_insertion_point(field_get:game.StartGameResponse.big_blind_id)
   return _internal_big_blind_id();
 }
-inline void StartGame::_internal_set_big_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void StartGameResponse::_internal_set_big_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   
   big_blind_id_ = value;
 }
-inline void StartGame::set_big_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void StartGameResponse::set_big_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   _internal_set_big_blind_id(value);
-  // @@protoc_insertion_point(field_set:game.StartGame.big_blind_id)
+  // @@protoc_insertion_point(field_set:game.StartGameResponse.big_blind_id)
 }
 
 // uint32 small_blind_id = 3;
-inline void StartGame::clear_small_blind_id() {
+inline void StartGameResponse::clear_small_blind_id() {
   small_blind_id_ = 0u;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGame::_internal_small_blind_id() const {
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGameResponse::_internal_small_blind_id() const {
   return small_blind_id_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGame::small_blind_id() const {
-  // @@protoc_insertion_point(field_get:game.StartGame.small_blind_id)
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StartGameResponse::small_blind_id() const {
+  // @@protoc_insertion_point(field_get:game.StartGameResponse.small_blind_id)
   return _internal_small_blind_id();
 }
-inline void StartGame::_internal_set_small_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void StartGameResponse::_internal_set_small_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   
   small_blind_id_ = value;
 }
-inline void StartGame::set_small_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void StartGameResponse::set_small_blind_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   _internal_set_small_blind_id(value);
-  // @@protoc_insertion_point(field_set:game.StartGame.small_blind_id)
+  // @@protoc_insertion_point(field_set:game.StartGameResponse.small_blind_id)
+}
+
+// repeated .game.Player players = 4;
+inline int StartGameResponse::_internal_players_size() const {
+  return players_.size();
+}
+inline int StartGameResponse::players_size() const {
+  return _internal_players_size();
+}
+inline void StartGameResponse::clear_players() {
+  players_.Clear();
+}
+inline ::game::Player* StartGameResponse::mutable_players(int index) {
+  // @@protoc_insertion_point(field_mutable:game.StartGameResponse.players)
+  return players_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::game::Player >*
+StartGameResponse::mutable_players() {
+  // @@protoc_insertion_point(field_mutable_list:game.StartGameResponse.players)
+  return &players_;
+}
+inline const ::game::Player& StartGameResponse::_internal_players(int index) const {
+  return players_.Get(index);
+}
+inline const ::game::Player& StartGameResponse::players(int index) const {
+  // @@protoc_insertion_point(field_get:game.StartGameResponse.players)
+  return _internal_players(index);
+}
+inline ::game::Player* StartGameResponse::_internal_add_players() {
+  return players_.Add();
+}
+inline ::game::Player* StartGameResponse::add_players() {
+  // @@protoc_insertion_point(field_add:game.StartGameResponse.players)
+  return _internal_add_players();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::game::Player >&
+StartGameResponse::players() const {
+  // @@protoc_insertion_point(field_list:game.StartGameResponse.players)
+  return players_;
 }
 
 // -------------------------------------------------------------------

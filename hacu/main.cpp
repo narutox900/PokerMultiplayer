@@ -1,6 +1,5 @@
 #include "test.hpp"
 #include <iostream>
+#include "stdio.h"
 int main() {
-    Test a(2);
-    std::cout << a.get();
 }

@@ -3,7 +3,7 @@ syntax = "proto3";
 package game;
 
 message Card {
-    uint32 num = 1;
+    uint32 value = 1;
     uint32 suit = 2;
 }
 
@@ -15,20 +15,19 @@ message Player {
     uint32 id = 1;
     uint32 balance = 2;
     string name = 3;
-
+    uint32 status = 4;
 }
 
 message StartGameRequest {
     uint32 id = 1;
-
 }
 
 // Server-side message
-message StartGame {
+message StartGameResponse {
     uint32 dealer_id = 1;
     uint32 big_blind_id = 2;
     uint32 small_blind_id = 3;
-
+    repeated Player players = 4;
 }
 
 message DealCards {

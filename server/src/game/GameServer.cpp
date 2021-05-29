@@ -3,15 +3,23 @@
 #include <poll.h>
 
 namespace game {
+#define DEFAULTBALANCE 200;
 
 GameServer::GameServer(size_t roomID, uint16_t port)
     : m_roomId(roomID), m_socket(port, g_maxPlayerCount), m_playerInfoList{}, m_buffer(new uint8_t[s_bufferSize]) {
     for (auto& player : m_playerInfoList) {
         player.id = -1;
     }
+    m_ownerID = -1;
 }
 
-bool GameServer::addPlayer(uint id, const IPEndpoint& endpoint, const int16_t sockfd) {
+bool GameServer::addPlayer(const IPEndpoint& endpoint, const int16_t sockfd) {
+    int id = 0;
+    for (int id = 0; id < g_maxPlayerCount; id++) {
+        if (m_playerInfoList[id].id != -1) {
+            break;
+        }
+    }
     if (id >= g_maxPlayerCount) {
         return false;
     }
@@ -19,12 +27,34 @@ bool GameServer::addPlayer(uint id, const IPEndpoint& endpoint, const int16_t so
     m_playerInfoList[id].endpoint = endpoint;
     m_playerInfoList[id].sockfd = sockfd;
     m_playerInfoList[id].connectionState = PlayerInfo::ConnectionState::Connected;
+    m_playerInfoList[id].balance = DEFAULTBALANCE;
+    if (m_ownerID == -1) {
+        m_ownerID = id;
+    }
 
+    return true;
+}
+
+bool GameServer::removePlayer(int id) {
+    if (m_playerInfoList[id].id == -1) {
+        return false;
+    }
+    m_playerInfoList[id].id = -1;
+    if (m_ownerID == id) {
+        for (int i = 0; i < 5; i++) {
+            if (m_playerInfoList[i].id != -1) {
+                m_ownerID = i;
+                break;
+            }
+        }
+        if (m_ownerID == id) m_ownerID = -1;
+    }
     return true;
 }
 
 void GameServer::start() {
     m_thread = std::thread(&GameServer::startGameServer, this);  // TODO handler
+    // startGameServer();
 }
 
 void GameServer::wait() {
@@ -34,7 +64,7 @@ void GameServer::wait() {
 }
 
 void GameServer::startGameServer() {
-    int nready, i, maxi, port,  connfd, sockfd;
+    int nready, i, maxi, port, connfd, sockfd;
     struct sockaddr_in cliaddr, servaddr;
     const int OPEN_MAX = sysconf(_SC_OPEN_MAX);  // maximum number of opened files
     struct pollfd clients[OPEN_MAX];
@@ -76,7 +106,7 @@ void GameServer::startGameServer() {
                    ntohs(cliaddr.sin_port));
 
             // Save client socket into clients array
-            for (i = 0; i < maxi+1; i++) {
+            for (i = 0; i < maxi + 1; i++) {
                 if (clients[i].fd < 0) {
                     clients[i].fd = connfd;
 
@@ -86,7 +116,7 @@ void GameServer::startGameServer() {
             }
 
             // No enough space in clients array
-            if (i == maxi+i) {
+            if (i == maxi + i) {
                 fprintf(stderr, "Error: too many clients\n");
                 close(connfd);
             }

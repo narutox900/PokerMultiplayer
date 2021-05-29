@@ -43,6 +43,7 @@ class IPEndpoint {
     }
 
     const char* addressAsStr() const {
+
         return inet_ntoa(m_sa.sin_addr);
     }
 

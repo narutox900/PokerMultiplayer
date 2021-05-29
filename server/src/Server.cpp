@@ -1,9 +1,10 @@
 #include "Server.hpp"
 
 #include <poll.h>
-#include <stdio.h>
 #include <pthread.h>
+#include <stdio.h>
 #include <sys/select.h>
+
 #include <thread>
 
 #define MAXCONNECTION 20
@@ -95,7 +96,7 @@ void Server::start() {
                     clients[i].fd = -1;
                 }
                 IPEndpoint client{clients_addr[i]};
-                printf("Received %ld byte packet: %s:%d buffer\n", n, client.addressAsStr(), client.port() );
+                printf("Received %ld byte packet: %s:%d buffer\n", n, client.addressAsStr(), client.port());
                 handleMessage(sockfd, m_buffer.get(), n, client);
             }
         }
@@ -196,8 +197,9 @@ void Server::onCreateRoom(int sockfd, const network::CreateRoomRequest& request,
         return;
     }
 
-    printf("Creating room: roomID %d clientID %d\n",roomID, clientID);
-    auto& room = m_roomVector.emplace_back(std::make_unique<game::GameServer>(roomID,BASEPORT+roomID+1));
+    printf("Creating room: roomID %d clientID %d\n", roomID, clientID);
+    auto& room = m_roomVector.emplace_back(std::make_unique<game::GameServer>(roomID, BASEPORT + roomID + 1));
+    // std::thread thread(&game::GameServer::start,room.get());
     room.get()->start();
     response.set_success(true);
     network::ClientIdentity* clientIdentity = response.mutable_assigned_identity();
@@ -213,7 +215,6 @@ void Server::onCreateRoom(int sockfd, const network::CreateRoomRequest& request,
     for (const auto& [playerID, player] : newRoom) {
         sendMessage(player.sockfd(), network::MessageType::RoomInfoChanged, roomInfoChangedMessage);
     }
-
 }
 void Server::onJoinRoom(int sockfd, const network::JoinRoomRequest& request, const IPEndpoint& client) {
     network::JoinRoomResponse response{};

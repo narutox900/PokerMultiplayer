@@ -26,7 +26,7 @@ class Client {
     void start();
 
    private:
-    void handleMessage(int sockfd, const uint8_t* buffer, size_t size );
+    void handleMessage(int sockfd, const uint8_t* buffer, size_t size);
     void sendMessage(int sockfd, network::MessageType type, const google::protobuf::Message& message);
     void askForName();
 };

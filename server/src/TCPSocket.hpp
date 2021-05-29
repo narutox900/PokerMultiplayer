@@ -38,7 +38,7 @@ class TCPSocket {
             printf("Error connecting to server\n");
             throw;
         }
-        printf("Test %d\n",m_socketFd);
+        printf("Test %d\n", m_socketFd);
     }
 
     TCPSocket(uint16_t bindedPort, int maxConnection) {
@@ -66,7 +66,7 @@ class TCPSocket {
     }
 
     ~TCPSocket() {
-        printf("Deconstructing TCP socket %d %d\n",m_socketFd,m_bindedPort);
+        printf("Deconstructing TCP socket %d %d\n", m_socketFd, m_bindedPort);
         if (m_socketFd >= 0) {
             close(m_socketFd);
             m_socketFd = -1;
@@ -102,8 +102,8 @@ class TCPSocket {
         return ::send(sockfd, buffer, size, 0);
     }
 
-    int recv(int sockfd,uint8_t* buffer, size_t size) {
-        return ::recv(sockfd, buffer,size,0);
+    int recv(int sockfd, uint8_t* buffer, size_t size) {
+        return ::recv(sockfd, buffer, size, 0);
     }
 
    private:

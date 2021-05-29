@@ -9,7 +9,8 @@ struct PlayerInfo {
     };
 
     int id;
-
+    int32_t balance;
+    int status;
     int32_t sockfd;
     IPEndpoint endpoint;
     ConnectionState connectionState;

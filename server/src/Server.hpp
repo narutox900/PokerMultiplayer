@@ -2,12 +2,13 @@
 
 #include <memory>
 #include <stack>
+#include <thread>
 #include <vector>
 
+#include "./game/GameServer.hpp"
 #include "./utils/ReusableIdList.hpp"
 #include "MessageType.hpp"
 #include "Room.hpp"
-#include "./game/GameServer.hpp"
 #include "TCPSocket.hpp"
 
 class Server {
@@ -17,7 +18,7 @@ class Server {
     std::unique_ptr<uint8_t[]> m_buffer;
 
     TCPSocket m_socket;
-    std::vector <std::unique_ptr<game::GameServer>> m_roomVector;
+    std::vector<std::unique_ptr<game::GameServer>> m_roomVector;
 
    public:
     Server(uint16_t port = 5000, int maxRoomCount = 4, size_t messageBufferSize = 1024);
