@@ -12,8 +12,19 @@ class TCPSocket {
     TCPSocket(const TCPSocket&) = delete;
     TCPSocket& operator=(const TCPSocket&) = delete;
 
-    TCPSocket(TCPSocket&&) = default;
-    TCPSocket& operator=(TCPSocket&&) = default;
+    TCPSocket(TCPSocket&& other) {
+        m_socketFd = other.m_socketFd;
+        other.m_socketFd = -1;
+        m_bindedPort = other.m_bindedPort;
+        other.m_bindedPort = -1;
+    }
+    TCPSocket& operator=(TCPSocket&& other) {
+        m_socketFd = other.m_socketFd;
+        other.m_socketFd = -1;
+        m_bindedPort = other.m_bindedPort;
+        other.m_bindedPort = -1;
+        return *this;
+    };
 
     TCPSocket() {
         m_bindedPort = -1;
@@ -90,7 +101,7 @@ class TCPSocket {
 
     int accept(struct sockaddr_in* client) {
         socklen_t sin_size = sizeof(struct sockaddr_in);
-        int newConFd = ::accept(m_socketFd, (struct sockaddr*)&client, &sin_size);
+        int newConFd = ::accept(m_socketFd, (struct sockaddr*)client, &sin_size);
         if (newConFd == -1) {
             throw;
         }

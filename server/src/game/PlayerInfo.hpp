@@ -1,3 +1,4 @@
+#pragma once
 #include "../IPEndpoint.hpp"
 
 namespace game {
@@ -10,6 +11,7 @@ struct PlayerInfo {
 
     int id;
     int32_t balance;
+    int currentBet;
     int status;
     int32_t sockfd;
     IPEndpoint endpoint;

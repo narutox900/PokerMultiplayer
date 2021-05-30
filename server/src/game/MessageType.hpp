@@ -1,13 +1,14 @@
 #pragma once
 namespace game {
 enum class MessageType : uint8_t {
-    StartGame = 0,
-    DealCards = 1,
-    DealCommunityCards = 2,
-    BetTurn = 3,
-    ClientBet = 4,
-    DoneBet = 5,
-    EndRound = 6,
-    Result = 7
+    StartGameRequest = 0,
+    StartGameResponse = 1,
+    DealCards = 2,
+    DealCommunityCards = 3,
+    BetTurn = 4,
+    BetTurnResponse =5,
+    DoneBet = 6,
+    EndRound = 7,
+    Result = 8
 };
 }

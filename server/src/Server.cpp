@@ -87,7 +87,7 @@ void Server::start() {
             // If the client is readable or errors occur
             if (clients[i].revents & (POLLRDNORM | POLLERR)) {
                 //TODO handler
-                n = recv(sockfd, m_buffer.get(), m_bufferSize, 0);
+                n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
                 if (n == -1) {
                     throw;
                 }
@@ -97,6 +97,17 @@ void Server::start() {
                 }
                 IPEndpoint client{clients_addr[i]};
                 printf("Received %ld byte packet: %s:%d buffer\n", n, client.addressAsStr(), client.port());
+                int* length = (int*)m_buffer.get();
+                n = recv(sockfd, m_buffer.get(), *length + 1, 0);
+
+                printf("receiving %ld bytes\n", n);
+                if (n == -1) {
+                    throw;
+                }
+                if (n == 0) {
+                    close(clients[i].fd);
+                    clients[i].fd = -1;
+                }
                 handleMessage(sockfd, m_buffer.get(), n, client);
             }
         }
@@ -197,7 +208,7 @@ void Server::onCreateRoom(int sockfd, const network::CreateRoomRequest& request,
         return;
     }
 
-    printf("Creating room: roomID %d clientID %d\n", roomID, clientID);
+    printf("Creating room: roomID %ld clientID %d\n", roomID, clientID);
     auto& room = m_roomVector.emplace_back(std::make_unique<game::GameServer>(roomID, BASEPORT + roomID + 1));
     // std::thread thread(&game::GameServer::start,room.get());
     room.get()->start();

@@ -2,33 +2,41 @@
 
 namespace game {
 
-Game::Game(std::array<PlayerInfo, 5>& playerInfoList) : m_deck(), m_currentBet(0), m_pool(0) {
+Game::Game(std::array<PlayerInfo, 5>& playerInfoList) : m_deck(), m_currentBet(0), m_pool(0), m_endTurnID(-1) {
     m_playerInfoList = playerInfoList;
+    for (int i = 0; i < 5; ++i) {
+        m_communityCards[i].value = -1;
+    }
 };
-Card* Game::dealPlayerCards() {
-    Card playerCards[2];
-    playerCards[0] = m_deck.deal();
-    playerCards[1] = m_deck.deal();
-    return playerCards;
+
+void Game::dealPlayerCards(int id) {
+    playerHands[id].cards[0] = m_deck.deal();
+    playerHands[id].cards[1] = m_deck.deal();
 }
 
-void Game::dealCommunityCard() {
+Card Game::dealCommunityCard() {
     for (int i = 0; i < 5; ++i) {
         if (m_communityCards[i].value != -1) {
             m_communityCards[i] = m_deck.deal();
-            break;
+            return m_communityCards[i];
         }
     }
+    Card tmp;
+    tmp.value = -1;
+    tmp.suit = -1;
+    return tmp;
 }
 void Game::foldPlayer(int id) {
     m_playerInfoList[id].status = NOT_PLAYING;
 }
 void Game::callPlayer(int id) {
-    m_playerInfoList[id].balance -= m_currentBet;
-    m_pool += m_currentBet;
+    m_playerInfoList[id].balance -= m_currentBet - m_playerInfoList[id].currentBet;
+    m_pool += m_currentBet - m_playerInfoList[id].currentBet;
+    m_playerInfoList[id].currentBet = m_currentBet;
 }
 void Game::raisePlayer(int id, int amount) {
     m_playerInfoList[id].balance -= amount;
+    m_playerInfoList[id].currentBet += amount;
     m_currentBet = amount;
     m_pool += amount;
 }
@@ -165,6 +173,7 @@ int Game::isTwoPair(Card* cards) {
             countOne = 0;
         };
     }
+    return 0;
 }
 
 int Game::isPair(Card* cards) {
@@ -181,7 +190,7 @@ int Game::isPair(Card* cards) {
 }
 
 Card* Game::sortCardsBySuit(Card* cards) {
-    Card sortedCards[7];
+    Card* sortedCards = (Card*)malloc(sizeof(Card) * 7);
     for (int i = 0; i < 7; i++) {
         sortedCards[i] = cards[i];
     }
@@ -199,7 +208,7 @@ Card* Game::sortCardsBySuit(Card* cards) {
 }
 
 Card* Game::sortCardsByValue(Card* cards) {
-    Card sortedCards[7];
+    Card* sortedCards = (Card*)malloc(sizeof(Card) * 7);
     for (int i = 0; i < 7; i++) {
         sortedCards[i] = cards[i];
     }

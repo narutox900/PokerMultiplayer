@@ -2,20 +2,15 @@ syntax = "proto3";
 
 package game;
 
-message Card {
+message ProtoCard {
     uint32 value = 1;
     uint32 suit = 2;
 }
 
-message Deck {
-    repeated Card cards = 1 ;
-}
-
-message Player {
+message ProtoPlayer {
     uint32 id = 1;
     uint32 balance = 2;
-    string name = 3;
-    uint32 status = 4;
+    int32 status = 3;
 }
 
 message StartGameRequest {
@@ -23,51 +18,64 @@ message StartGameRequest {
 }
 
 // Server-side message
+// No confirmation
 message StartGameResponse {
     uint32 dealer_id = 1;
-    uint32 big_blind_id = 2;
-    uint32 small_blind_id = 3;
-    repeated Player players = 4;
+    // uint32 big_blind_id = 2;
+    // uint32 small_blind_id = 3;
+    repeated ProtoPlayer players = 2;
 }
 
+// Card value from 2 - 14  11-12-13-14: J-Q-K-A
+// Card suit from 0 - 3
+// No confirmation
 message DealCards {
-    repeated Card cards = 1;
+    repeated ProtoCard cards = 1;
 }
 
+//No confirmation
 message DealCommunityCards {
-    repeated Card cards = 1;
+    uint32 phase = 1; 
+    repeated ProtoCard cards = 2;
 }
 
 message Result {
     message EndPlayer {
-        Player player = 1;
-        repeated Card cards = 2;
+        ProtoPlayer player = 1;
+        repeated ProtoCard cards = 2;
     }
     repeated EndPlayer end_players = 1;
     uint32 winner_id = 2;
     uint32 prize = 3;
 }
 
+
+//To every clients
+//No need confirmation
 message BetTurn {
     uint32 player_id = 1;
-    uint32 amount = 2;
-    uint32 balance = 3;
-    uint32 state = 4; 
+    uint32 current_pool = 2;
+    uint32 amount = 3; // The least amount of money needed to bet
+    uint32 balance = 4; // That player's balance
 }
 
+//From the current player's turn to server
+message BetTurnResponse {
+    uint32 player_id = 1;
+    uint32 action = 2; // in the enum file
+    uint32 amount = 3; // bet amount
+}
+
+// To all clients
+// No need confirmation
 message DoneBet {
     uint32 player_id = 1; //id of player who just bet
-    uint32 bet_amount = 2; 
-    uint32 player_amount = 3; // that player's money left
+    uint32 bet_amount = 2; // Total amount of player's bet in that turn
+    uint32 player_balance = 3; // that player's money left
+    uint32 action = 4;
 }
 
+//broadcast to all clients
 message EndRound {
     uint32 total_amount = 1; // total bet amount on board
 }
-
-// Client-side message
-message ClientBet {
-    uint32 decision = 1;
-    uint32 amount = 2;
-}
-

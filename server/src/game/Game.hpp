@@ -11,29 +11,62 @@ struct Player {
     Card cards[2];
 };
 
-enum status {
+enum status : int {
     NOT_PLAYING = -1,
     PLAYING = 1
+};
+
+enum action : int {
+    CALL = 0,
+    BET = 1,
+    FOLD = 2
 };
 
 class Game {
    private:
     Deck m_deck;
-    std::array<Card, 5> m_communityCards;
-    int m_currentBet;
-    int m_pool;
-    std::array<PlayerInfo,5> m_playerInfoList;
-    std::array<Player,5> playerHands;
 
    public:
-    Game();
-    Game(std::array<PlayerInfo, 5> &playerInfoList);
-    Card* dealPlayerCards();
-    void dealCommunityCard();
+    std::array<Card, 5> m_communityCards;
+    int m_currentBet;
+    int m_endTurnID;
+    int m_pool;
+    std::array<PlayerInfo, 5> m_playerInfoList;
+    std::array<Player, 5> playerHands;
+
+   public:
+    Game(const Game&) = delete;
+    Game& operator=(const Game&) = delete;
+
+    Game(Game&& other) {
+        m_communityCards = other.m_communityCards;
+        m_currentBet = other.m_currentBet;
+        m_endTurnID = other.m_endTurnID;
+        m_pool = other.m_pool;
+        m_playerInfoList = other.m_playerInfoList;
+        playerHands = other.playerHands;
+    }
+    Game& operator=(Game&& other) {
+        m_communityCards = other.m_communityCards;
+        m_currentBet = other.m_currentBet;
+        m_endTurnID = other.m_endTurnID;
+        m_pool = other.m_pool;
+        m_playerInfoList = other.m_playerInfoList;
+        playerHands = other.playerHands;
+        return *this;
+    }
+
+    Game() {
+        m_currentBet = -1;
+        m_endTurnID = -1;
+        m_pool = -1;
+    };
+    Game(std::array<PlayerInfo, 5>& playerInfoList);
+    void dealPlayerCards(int id);
+    Card dealCommunityCard();
     void foldPlayer(int id);
     void callPlayer(int id);
     void raisePlayer(int id, int amount);
-
 
    private:
     int calculatePoint(int id);

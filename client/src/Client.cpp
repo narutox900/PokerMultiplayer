@@ -165,14 +165,14 @@ void Client::sendMessage(int sockfd, network::MessageType type, const google::pr
     uint8_t* buffer = m_buffer.get();
 
     // Write message type
-    buffer[0] = (uint8_t)type;
+    int messageSize = message.ByteSizeLong();
+    int* length = (int*)(&buffer[0]);
 
-    //Write message
-    size_t messageSize = message.ByteSizeLong();
-    bool ret = message.SerializeToArray(buffer + 1, messageSize);
-    assert(ret);
-
-    m_socket.send(sockfd, buffer, messageSize + 1);
+    *length = messageSize;
+    buffer[sizeof(int)] = (uint8_t)type;
+    bool ret = message.SerializeToArray(buffer + 1 + sizeof(int), messageSize);
+    assert(ret);  //Write message
+    m_socket.send(sockfd, buffer, messageSize + 1+sizeof(int));
 }
 
 static void printProtoAsJson(google::protobuf::Message& proto) {
@@ -223,7 +223,7 @@ void Client::handleMessage(int sockfd, const uint8_t* buffer, size_t size) {
             m_gameSocket = TCPSocket(BASEPORT + m_roomID + 1, BASEADDRESS);
             pollList[2] = {.fd = m_gameSocket.socketFd(), .events = POLLIN};
 
-            printf("clientId: %d roomid: %d\n", m_clientID, m_roomID);
+            printf("clientId: %d roomid: %ld\n", m_clientID, m_roomID);
             printf("CreateRoomResponse:\n");
 
             printProtoAsJson(response);

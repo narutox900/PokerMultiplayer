@@ -1,7 +1,5 @@
 #include "GameServer.hpp"
 
-#include <poll.h>
-
 namespace game {
 #define DEFAULTBALANCE 200;
 
@@ -66,10 +64,7 @@ void GameServer::wait() {
 void GameServer::startGameServer() {
     int nready, i, maxi, port, connfd, sockfd;
     struct sockaddr_in cliaddr, servaddr;
-    const int OPEN_MAX = sysconf(_SC_OPEN_MAX);  // maximum number of opened files
-    struct pollfd clients[OPEN_MAX];
-    // IPEndpoint clients_endpoint[OPEN_MAX];
-    struct sockaddr_in clients_addr[OPEN_MAX];
+
     ssize_t n;
     int INFTIM = -1;
     maxi = g_maxPlayerCount;  // max index into the clients[] array
@@ -80,7 +75,7 @@ void GameServer::startGameServer() {
 
     printf("GameServer %ld start polling\n", m_roomId);
 
-    for (i = 1; i < OPEN_MAX; i++) {
+    for (i = 1; i < 10; i++) {
         clients[i].fd = -1;  //avaiable entries
     }
 
@@ -140,7 +135,8 @@ void GameServer::startGameServer() {
             // If the client is readable or errors occur
             if (clients[i].revents & (POLLRDNORM | POLLERR)) {
                 //TODO handler
-                n = recv(sockfd, m_buffer.get(), s_bufferSize, 0);
+                // Get message length
+                n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
                 if (n == -1) {
                     throw;
                 }
@@ -150,26 +146,261 @@ void GameServer::startGameServer() {
                 }
                 IPEndpoint client{clients_addr[i]};
                 printf("Received %ld byte packet: %s:%d\n", n, client.addressAsStr(), client.port());
-                // handleMessage(sockfd, m_buffer.get(), n, client);
+                n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
+                int* length = (int*)m_buffer.get();
+
+                n = recv(sockfd, m_buffer.get(), *length + 1, 0);
+                printf("receiving %ld bytes\n", n);
+                if (n == -1) {
+                    printf("Socket read error: errorno %d", errno);
+                    break;
+                }
+
+                if (n >= s_bufferSize) {
+                    continue;
+                }
+                handleMessage(sockfd, m_buffer.get(), n, client);
             }
         }
     }
 }
 
 void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, const IPEndpoint& client) {
+    game::MessageType mesgType = (game::MessageType)buffer[0];
+    if (mesgType == game::MessageType::StartGameRequest) {
+        game::StartGameResponse response{};
+        response.set_dealer_id(m_ownerID);
+        for (int i = 0; i < g_maxPlayerCount; ++i) {
+            if (m_playerInfoList[i].id == -1) continue;
+            m_playerInfoList[i].status = PLAYING;
+            game::ProtoPlayer* player = response.add_players();
+            player->set_id(m_playerInfoList[i].id);
+            player->set_balance(m_playerInfoList[i].balance);
+            player->set_status(m_playerInfoList[i].status);
+        }
+        for (int i = 0; i < g_maxPlayerCount; ++i) {
+            if (m_playerInfoList[i].id == -1) continue;
+            sendMessage(m_playerInfoList[i].endpoint, game::MessageType::StartGameResponse, response, m_playerInfoList[i].sockfd);
+        }
+        startGameInstance();
+    }
 }
+
+void GameServer::startGameInstance() {
+    // start new game instance
+    gameInstance = Game(m_playerInfoList);
+    int firstID = m_ownerID;
+    // All people bet the base value
+    for (int i = 0; i < g_maxPlayerCount; ++i) {
+        if (m_playerInfoList[i].id != -1) {
+            if (m_playerInfoList[i].balance < 2 * g_baseBetValue) {
+                m_playerInfoList[i].status = NOT_PLAYING;
+                continue;
+            }
+            gameInstance.dealPlayerCards(i);
+            // send  cards info to player
+            Card card0 = gameInstance.playerHands[i].cards[0];
+            Card card1 = gameInstance.playerHands[i].cards[1];
+            game::DealCards dealCard{};
+            game::ProtoCard* protocard0 = dealCard.add_cards();
+            protocard0->set_suit(card0.suit);
+            protocard0->set_value(card0.value);
+            game::ProtoCard* protocard1 = dealCard.add_cards();
+            protocard1->set_suit(card1.suit);
+            protocard1->set_value(card1.value);
+            sendMessage(m_playerInfoList[i].endpoint, game::MessageType::DealCards, dealCard, m_playerInfoList[i].sockfd);
+            // default bet amount
+            m_playerInfoList[i].balance -= g_baseBetValue;
+            m_playerInfoList[i].currentBet = g_baseBetValue;
+            gameInstance.m_pool += g_baseBetValue;
+        }
+    }
+    // broadcast betturn message
+    int currentID = firstID;
+    broadcastBetTurnMessage(currentID, gameInstance.m_pool, gameInstance.m_currentBet - m_playerInfoList[currentID].currentBet, m_playerInfoList[currentID].balance);
+    //turn 1
+    recvBetResponseMessage(currentID);
+    int phase = 0;
+    gameInstance.m_endTurnID = currentID;
+    while (1) {
+        currentID++;
+        // circular count
+        if (currentID >= g_maxPlayerCount) {
+            currentID = 0;
+        }
+        //reach end turn
+        if (currentID == gameInstance.m_endTurnID) break;
+        // if doesn't exist player continue
+        if (m_playerInfoList[currentID].id == -1) continue;
+        if (m_playerInfoList[currentID].status == NOT_PLAYING) continue;
+        broadcastBetTurnMessage(currentID, gameInstance.m_pool, gameInstance.m_currentBet - m_playerInfoList[currentID].currentBet, m_playerInfoList[currentID].balance);
+    }
+    sendEndRoundMessage(gameInstance.m_pool);
+    phase++;
+    // Deal community card
+    dealCommunityCard(phase);
+
+    // phase 2 3 4 is the same
+    while (1) {
+        if (phase == 5) break;
+        // one time for the first player
+        gameInstance.m_endTurnID = firstID;
+        if (m_playerInfoList[firstID].status == PLAYING && m_playerInfoList[firstID].id != -1) {
+            broadcastBetTurnMessage(firstID, gameInstance.m_pool, gameInstance.m_currentBet - m_playerInfoList[firstID].currentBet, m_playerInfoList[firstID].balance);
+            recvBetResponseMessage(firstID);
+        }
+        // while loop for the rest
+        currentID = firstID;
+        while (1) {
+            currentID++;
+            // circular count
+            if (currentID >= g_maxPlayerCount) {
+                currentID = 0;
+            }
+            //reach end turn
+            if (currentID == gameInstance.m_endTurnID) break;
+            // if doesn't exist player continue
+            if (m_playerInfoList[currentID].id == -1) continue;
+            if (m_playerInfoList[currentID].status == NOT_PLAYING) continue;
+            broadcastBetTurnMessage(currentID, gameInstance.m_pool, gameInstance.m_currentBet - m_playerInfoList[currentID].currentBet, m_playerInfoList[currentID].balance);
+        }
+        sendEndRoundMessage(gameInstance.m_pool);
+        phase++;
+        // Deal community card
+        dealCommunityCard(phase);
+    }
+}
+
+void GameServer::dealCommunityCard(int phase) {
+    // if first phase deal 2 else deal 1
+    game::DealCommunityCards dealCommunityMessage{};
+    dealCommunityMessage.set_phase(phase);
+    if (phase == 1) {
+        Card tmp = gameInstance.dealCommunityCard();
+        game::ProtoCard* first_card = dealCommunityMessage.add_cards();
+        first_card->set_suit(tmp.suit);
+        first_card->set_value(tmp.value);
+        tmp = gameInstance.dealCommunityCard();
+        game::ProtoCard* second_card = dealCommunityMessage.add_cards();
+        second_card->set_suit(tmp.suit);
+        second_card->set_value(tmp.value);
+    } else if (phase == 5) {
+        return;
+    } else {
+        Card tmp = gameInstance.dealCommunityCard();
+        game::ProtoCard* card = dealCommunityMessage.add_cards();
+        card->set_value(tmp.value);
+        card->set_suit(tmp.suit);
+    }
+    for (int i = 0; i < g_maxPlayerCount; i++) {
+        if (m_playerInfoList[i].id == -1) continue;
+        sendMessage(m_playerInfoList[i].endpoint, game::MessageType::DealCommunityCards, dealCommunityMessage, m_playerInfoList[i].sockfd);
+    }
+}
+
+void GameServer::sendEndRoundMessage(int total_amount) {
+    game::EndRound endRoundMessage{};
+    endRoundMessage.set_total_amount(total_amount);
+    for (int i = 0; i < g_maxPlayerCount; i++) {
+        if (m_playerInfoList[i].id == -1) continue;
+        sendMessage(m_playerInfoList[i].endpoint, game::MessageType::EndRound, endRoundMessage, m_playerInfoList[i].sockfd);
+        // reset current bet
+        m_playerInfoList[i].currentBet = 0;
+    }
+    // reset current bet
+    gameInstance.m_currentBet = 0;
+}
+
+void GameServer::recvBetResponseMessage(int id) {
+    int sockfd = m_playerInfoList[id].sockfd;
+    int n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
+    if (n == -1) {
+        throw;
+    }
+    //in case disconnect message
+    if (n == 0) {
+        for (int i = 1; i <= g_maxPlayerCount; i++) {
+            if (clients[i].fd == sockfd) {
+                close(sockfd);
+                clients[i].fd = -1;
+                m_playerInfoList[id].id = -1;
+                break;
+            }
+        }
+    }
+    n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
+    int* length = (int*)m_buffer.get();
+
+    n = recv(sockfd, m_buffer.get(), *length + 1, 0);
+    printf("receiving %d bytes\n", n);
+    if (n == -1) {
+        printf("Socket read error: errorno %d", errno);
+    }
+    uint8_t* buffer = m_buffer.get();
+    game::MessageType mesgType = (game::MessageType)buffer[0];
+    if (mesgType == game::MessageType::BetTurnResponse) {
+        game::BetTurnResponse response;
+        bool parseResult = response.ParseFromArray(buffer, n - 1);
+        assert(parseResult);
+        int amount = response.amount();
+        switch (response.action()) {
+            case game::action::CALL:
+                gameInstance.callPlayer(id);
+                break;
+            case game::action::BET:
+                gameInstance.raisePlayer(id, amount);
+                break;
+            case game::action::FOLD:
+                gameInstance.foldPlayer(id);
+                break;
+            default:
+                break;
+        }
+        sendDoneBetMessage(id, amount, m_playerInfoList[id].balance, response.action());
+    } else {
+        // unwanted behavior
+        throw;
+    }
+}
+
+void GameServer::sendDoneBetMessage(int id, int amount, int balance, int action) {
+    game::DoneBet doneBetMessage{};
+    doneBetMessage.set_player_id(id);
+    doneBetMessage.set_action(action);
+    doneBetMessage.set_bet_amount(amount);
+    doneBetMessage.set_player_balance(balance);
+
+    for (int i = 0; i < g_maxPlayerCount; i++) {
+        if (m_playerInfoList[i].id == -1) continue;
+        sendMessage(m_playerInfoList[i].endpoint, game::MessageType::DoneBet, doneBetMessage, m_playerInfoList[i].sockfd);
+    }
+}
+
+void GameServer::broadcastBetTurnMessage(int id, int currentPool, int amount, int balance) {
+    game::BetTurn betTurnMessage{};
+    betTurnMessage.set_player_id(id);
+    betTurnMessage.set_current_pool(currentPool);
+    betTurnMessage.set_amount(amount);
+    betTurnMessage.set_balance(balance);
+    for (int i = 0; i < g_maxPlayerCount; i++) {
+        if (m_playerInfoList[i].id == -1) continue;
+        sendMessage(m_playerInfoList[i].endpoint, game::MessageType::BetTurn, betTurnMessage, m_playerInfoList[i].sockfd);
+    }
+}
+
 void GameServer::sendMessage(const IPEndpoint& receiver, game::MessageType type, const google::protobuf::Message& message, int sockfd) {
     uint8_t* buffer = m_buffer.get();
 
-    // write type into buffer
-    buffer[0] = (uint8_t)type;
-
     //write message
     size_t messageSize = message.ByteSizeLong();
-    bool ret = message.SerializeToArray(buffer + 1, messageSize);
+    int* length = (int*)(&buffer[0]);
+    *length = messageSize;
+    // write type into buffer
+    buffer[sizeof(int)] = (uint8_t)type;
+    bool ret = message.SerializeToArray(buffer + 1 + sizeof(int), messageSize);
     assert(ret);
 
-    send(sockfd, buffer, messageSize, 0);
+    send(sockfd, buffer, messageSize + 1 + sizeof(int), 0);
 }
 
 }  // namespace game
