@@ -669,6 +669,7 @@ class StartGameResponse PROTOBUF_FINAL :
   enum : int {
     kPlayersFieldNumber = 2,
     kDealerIdFieldNumber = 1,
+    kSuccessFieldNumber = 3,
   };
   // repeated .game.ProtoPlayer players = 2;
   int players_size() const;
@@ -697,6 +698,15 @@ class StartGameResponse PROTOBUF_FINAL :
   void _internal_set_dealer_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
+  // bool success = 3;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:game.StartGameResponse)
  private:
   class _Internal;
@@ -706,6 +716,7 @@ class StartGameResponse PROTOBUF_FINAL :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::game::ProtoPlayer > players_;
   ::PROTOBUF_NAMESPACE_ID::uint32 dealer_id_;
+  bool success_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_game_2eproto;
 };
@@ -2184,6 +2195,26 @@ inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::game::ProtoPlayer >&
 StartGameResponse::players() const {
   // @@protoc_insertion_point(field_list:game.StartGameResponse.players)
   return players_;
+}
+
+// bool success = 3;
+inline void StartGameResponse::clear_success() {
+  success_ = false;
+}
+inline bool StartGameResponse::_internal_success() const {
+  return success_;
+}
+inline bool StartGameResponse::success() const {
+  // @@protoc_insertion_point(field_get:game.StartGameResponse.success)
+  return _internal_success();
+}
+inline void StartGameResponse::_internal_set_success(bool value) {
+  
+  success_ = value;
+}
+inline void StartGameResponse::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:game.StartGameResponse.success)
 }
 
 // -------------------------------------------------------------------

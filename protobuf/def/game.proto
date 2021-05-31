@@ -10,7 +10,7 @@ message ProtoCard {
 message ProtoPlayer {
     uint32 id = 1;
     uint32 balance = 2;
-    int32 status = 3;
+    int32 status = 3; // PLAYING = 1 NOTPLAYING = -1
 }
 
 message StartGameRequest {
@@ -24,6 +24,7 @@ message StartGameResponse {
     // uint32 big_blind_id = 2;
     // uint32 small_blind_id = 3;
     repeated ProtoPlayer players = 2;
+    bool success = 3; // if can't start success = false
 }
 
 // Card value from 2 - 14  11-12-13-14: J-Q-K-A
@@ -39,7 +40,9 @@ message DealCommunityCards {
     repeated ProtoCard cards = 2;
 }
 
+
 message Result {
+    //Only send the cards of the players that are still playing
     message EndPlayer {
         ProtoPlayer player = 1;
         repeated ProtoCard cards = 2;
@@ -62,7 +65,7 @@ message BetTurn {
 //From the current player's turn to server
 message BetTurnResponse {
     uint32 player_id = 1;
-    uint32 action = 2; // in the enum file
+    uint32 action = 2; // in the enum file //CALL = 0 BET = 1 FOLD =2
     uint32 amount = 3; // bet amount
 }
 

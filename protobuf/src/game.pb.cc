@@ -59,7 +59,8 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StartGameRequestDefaultTypeInte
 constexpr StartGameResponse::StartGameResponse(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : players_()
-  , dealer_id_(0u){}
+  , dealer_id_(0u)
+  , success_(false){}
 struct StartGameResponseDefaultTypeInternal {
   constexpr StartGameResponseDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -211,6 +212,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_game_2eproto::offsets[] PROTOB
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::game::StartGameResponse, dealer_id_),
   PROTOBUF_FIELD_OFFSET(::game::StartGameResponse, players_),
+  PROTOBUF_FIELD_OFFSET(::game::StartGameResponse, success_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::game::DealCards, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -277,14 +279,14 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 7, -1, sizeof(::game::ProtoPlayer)},
   { 15, -1, sizeof(::game::StartGameRequest)},
   { 21, -1, sizeof(::game::StartGameResponse)},
-  { 28, -1, sizeof(::game::DealCards)},
-  { 34, -1, sizeof(::game::DealCommunityCards)},
-  { 41, -1, sizeof(::game::Result_EndPlayer)},
-  { 48, -1, sizeof(::game::Result)},
-  { 56, -1, sizeof(::game::BetTurn)},
-  { 65, -1, sizeof(::game::BetTurnResponse)},
-  { 73, -1, sizeof(::game::DoneBet)},
-  { 82, -1, sizeof(::game::EndRound)},
+  { 29, -1, sizeof(::game::DealCards)},
+  { 35, -1, sizeof(::game::DealCommunityCards)},
+  { 42, -1, sizeof(::game::Result_EndPlayer)},
+  { 49, -1, sizeof(::game::Result)},
+  { 57, -1, sizeof(::game::BetTurn)},
+  { 66, -1, sizeof(::game::BetTurnResponse)},
+  { 74, -1, sizeof(::game::DoneBet)},
+  { 83, -1, sizeof(::game::EndRound)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -306,27 +308,28 @@ const char descriptor_table_protodef_game_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\n\ngame.proto\022\004game\"(\n\tProtoCard\022\r\n\005value"
   "\030\001 \001(\r\022\014\n\004suit\030\002 \001(\r\":\n\013ProtoPlayer\022\n\n\002i"
   "d\030\001 \001(\r\022\017\n\007balance\030\002 \001(\r\022\016\n\006status\030\003 \001(\005"
-  "\"\036\n\020StartGameRequest\022\n\n\002id\030\001 \001(\r\"J\n\021Star"
+  "\"\036\n\020StartGameRequest\022\n\n\002id\030\001 \001(\r\"[\n\021Star"
   "tGameResponse\022\021\n\tdealer_id\030\001 \001(\r\022\"\n\007play"
-  "ers\030\002 \003(\0132\021.game.ProtoPlayer\"+\n\tDealCard"
-  "s\022\036\n\005cards\030\001 \003(\0132\017.game.ProtoCard\"C\n\022Dea"
-  "lCommunityCards\022\r\n\005phase\030\001 \001(\r\022\036\n\005cards\030"
-  "\002 \003(\0132\017.game.ProtoCard\"\247\001\n\006Result\022+\n\013end"
-  "_players\030\001 \003(\0132\026.game.Result.EndPlayer\022\021"
-  "\n\twinner_id\030\002 \001(\r\022\r\n\005prize\030\003 \001(\r\032N\n\tEndP"
-  "layer\022!\n\006player\030\001 \001(\0132\021.game.ProtoPlayer"
-  "\022\036\n\005cards\030\002 \003(\0132\017.game.ProtoCard\"S\n\007BetT"
-  "urn\022\021\n\tplayer_id\030\001 \001(\r\022\024\n\014current_pool\030\002"
-  " \001(\r\022\016\n\006amount\030\003 \001(\r\022\017\n\007balance\030\004 \001(\r\"D\n"
-  "\017BetTurnResponse\022\021\n\tplayer_id\030\001 \001(\r\022\016\n\006a"
-  "ction\030\002 \001(\r\022\016\n\006amount\030\003 \001(\r\"X\n\007DoneBet\022\021"
-  "\n\tplayer_id\030\001 \001(\r\022\022\n\nbet_amount\030\002 \001(\r\022\026\n"
-  "\016player_balance\030\003 \001(\r\022\016\n\006action\030\004 \001(\r\" \n"
-  "\010EndRound\022\024\n\014total_amount\030\001 \001(\rb\006proto3"
+  "ers\030\002 \003(\0132\021.game.ProtoPlayer\022\017\n\007success\030"
+  "\003 \001(\010\"+\n\tDealCards\022\036\n\005cards\030\001 \003(\0132\017.game"
+  ".ProtoCard\"C\n\022DealCommunityCards\022\r\n\005phas"
+  "e\030\001 \001(\r\022\036\n\005cards\030\002 \003(\0132\017.game.ProtoCard\""
+  "\247\001\n\006Result\022+\n\013end_players\030\001 \003(\0132\026.game.R"
+  "esult.EndPlayer\022\021\n\twinner_id\030\002 \001(\r\022\r\n\005pr"
+  "ize\030\003 \001(\r\032N\n\tEndPlayer\022!\n\006player\030\001 \001(\0132\021"
+  ".game.ProtoPlayer\022\036\n\005cards\030\002 \003(\0132\017.game."
+  "ProtoCard\"S\n\007BetTurn\022\021\n\tplayer_id\030\001 \001(\r\022"
+  "\024\n\014current_pool\030\002 \001(\r\022\016\n\006amount\030\003 \001(\r\022\017\n"
+  "\007balance\030\004 \001(\r\"D\n\017BetTurnResponse\022\021\n\tpla"
+  "yer_id\030\001 \001(\r\022\016\n\006action\030\002 \001(\r\022\016\n\006amount\030\003"
+  " \001(\r\"X\n\007DoneBet\022\021\n\tplayer_id\030\001 \001(\r\022\022\n\nbe"
+  "t_amount\030\002 \001(\r\022\026\n\016player_balance\030\003 \001(\r\022\016"
+  "\n\006action\030\004 \001(\r\" \n\010EndRound\022\024\n\014total_amou"
+  "nt\030\001 \001(\rb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_game_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_game_2eproto = {
-  false, false, 799, descriptor_table_protodef_game_2eproto, "game.proto", 
+  false, false, 816, descriptor_table_protodef_game_2eproto, "game.proto", 
   &descriptor_table_game_2eproto_once, nullptr, 0, 12,
   schemas, file_default_instances, TableStruct_game_2eproto::offsets,
   file_level_metadata_game_2eproto, file_level_enum_descriptors_game_2eproto, file_level_service_descriptors_game_2eproto,
@@ -1018,12 +1021,17 @@ StartGameResponse::StartGameResponse(const StartGameResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       players_(from.players_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  dealer_id_ = from.dealer_id_;
+  ::memcpy(&dealer_id_, &from.dealer_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&success_) -
+    reinterpret_cast<char*>(&dealer_id_)) + sizeof(success_));
   // @@protoc_insertion_point(copy_constructor:game.StartGameResponse)
 }
 
 void StartGameResponse::SharedCtor() {
-dealer_id_ = 0u;
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&dealer_id_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&success_) -
+    reinterpret_cast<char*>(&dealer_id_)) + sizeof(success_));
 }
 
 StartGameResponse::~StartGameResponse() {
@@ -1053,7 +1061,9 @@ void StartGameResponse::Clear() {
   (void) cached_has_bits;
 
   players_.Clear();
-  dealer_id_ = 0u;
+  ::memset(&dealer_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&success_) -
+      reinterpret_cast<char*>(&dealer_id_)) + sizeof(success_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1081,6 +1091,13 @@ const char* StartGameResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESP
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else goto handle_unusual;
+        continue;
+      // bool success = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
         } else goto handle_unusual;
         continue;
       default: {
@@ -1125,6 +1142,12 @@ failure:
       InternalWriteMessage(2, this->_internal_players(i), target, stream);
   }
 
+  // bool success = 3;
+  if (this->success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(3, this->_internal_success(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1153,6 +1176,11 @@ size_t StartGameResponse::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_dealer_id());
+  }
+
+  // bool success = 3;
+  if (this->success() != 0) {
+    total_size += 1 + 1;
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1190,6 +1218,9 @@ void StartGameResponse::MergeFrom(const StartGameResponse& from) {
   if (from.dealer_id() != 0) {
     _internal_set_dealer_id(from._internal_dealer_id());
   }
+  if (from.success() != 0) {
+    _internal_set_success(from._internal_success());
+  }
 }
 
 void StartGameResponse::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -1214,7 +1245,12 @@ void StartGameResponse::InternalSwap(StartGameResponse* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   players_.InternalSwap(&other->players_);
-  swap(dealer_id_, other->dealer_id_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(StartGameResponse, success_)
+      + sizeof(StartGameResponse::success_)
+      - PROTOBUF_FIELD_OFFSET(StartGameResponse, dealer_id_)>(
+          reinterpret_cast<char*>(&dealer_id_),
+          reinterpret_cast<char*>(&other->dealer_id_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StartGameResponse::GetMetadata() const {

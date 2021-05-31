@@ -2,7 +2,7 @@
 
 namespace game {
 
-Game::Game(std::array<PlayerInfo, 5>& playerInfoList) : m_deck(), m_currentBet(0), m_pool(0), m_endTurnID(-1) {
+Game::Game(std::array<PlayerInfo, 5>& playerInfoList) : m_deck(), m_currentBet(0), m_pool(0), m_endTurnID(-1), m_activePlayerCount(0) {
     m_playerInfoList = playerInfoList;
     for (int i = 0; i < 5; ++i) {
         m_communityCards[i].value = -1;
@@ -28,6 +28,7 @@ Card Game::dealCommunityCard() {
 }
 void Game::foldPlayer(int id) {
     m_playerInfoList[id].status = NOT_PLAYING;
+    m_activePlayerCount--;
 }
 void Game::callPlayer(int id) {
     m_playerInfoList[id].balance -= m_currentBet - m_playerInfoList[id].currentBet;
@@ -246,5 +247,33 @@ int Game::calculatePoint(int id) {
     if (point = isThreeOfAKind(cards) > 0) return point;
     if (point = isPair(cards) > 0) return point;
     return sortedCards[0].value;
+}
+
+// return winner_id, add prize to the balance
+int Game::getResult() {
+    if (m_activePlayerCount < 2) {
+        for (int i = 0; i < g_maxPlayerCount; ++i) {
+            if (m_playerInfoList[i].id != -1 && m_playerInfoList[i].status == PLAYING) {
+                m_playerInfoList[i].balance += m_pool;
+                return i;
+            }
+        }
+    }
+    int result[g_maxPlayerCount];
+    for (int i = 0; i < g_maxPlayerCount; ++i) {
+        if (m_playerInfoList[i].id != -1 && m_playerInfoList[i].status == PLAYING) {
+            result[i] = calculatePoint(i);
+        } else
+            result[i] = -1;
+    }
+    int max = -1;
+    int maxID = -1;
+    for (int i = 0; i < g_maxPlayerCount; ++i) {
+        if (max < result[i]) {
+            max = result[i];
+            maxID = i;
+        }
+    }
+    return maxID;
 }
 }  // namespace game

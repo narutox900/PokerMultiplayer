@@ -41,6 +41,7 @@ class GameServer {
 
    private:
     void broadcastBetTurnMessage(int id, int currentPool, int amount, int balance);
+    void broadcastResultMessage();
     void sendMessage(const IPEndpoint& receiver, MessageType type, const google::protobuf::Message& message, int sockfd);
     void sendEndRoundMessage(int total_amount);
     void sendDoneBetMessage(int id, int amount, int balance, int action);

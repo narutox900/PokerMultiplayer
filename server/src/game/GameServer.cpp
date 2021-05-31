@@ -172,12 +172,21 @@ void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, c
         response.set_dealer_id(m_ownerID);
         for (int i = 0; i < g_maxPlayerCount; ++i) {
             if (m_playerInfoList[i].id == -1) continue;
+            if (m_playerInfoList[i].balance < 2 * g_baseBetValue) {
+                m_playerInfoList[i].status = NOT_PLAYING;
+                continue;
+            }
             m_playerInfoList[i].status = PLAYING;
             game::ProtoPlayer* player = response.add_players();
             player->set_id(m_playerInfoList[i].id);
             player->set_balance(m_playerInfoList[i].balance);
             player->set_status(m_playerInfoList[i].status);
+            gameInstance.m_activePlayerCount++;
         }
+        if (gameInstance.m_activePlayerCount < 2) {
+            response.set_success(false);
+        }
+        response.set_success(true);
         for (int i = 0; i < g_maxPlayerCount; ++i) {
             if (m_playerInfoList[i].id == -1) continue;
             sendMessage(m_playerInfoList[i].endpoint, game::MessageType::StartGameResponse, response, m_playerInfoList[i].sockfd);
@@ -193,10 +202,6 @@ void GameServer::startGameInstance() {
     // All people bet the base value
     for (int i = 0; i < g_maxPlayerCount; ++i) {
         if (m_playerInfoList[i].id != -1) {
-            if (m_playerInfoList[i].balance < 2 * g_baseBetValue) {
-                m_playerInfoList[i].status = NOT_PLAYING;
-                continue;
-            }
             gameInstance.dealPlayerCards(i);
             // send  cards info to player
             Card card0 = gameInstance.playerHands[i].cards[0];
@@ -234,6 +239,7 @@ void GameServer::startGameInstance() {
         if (m_playerInfoList[currentID].id == -1) continue;
         if (m_playerInfoList[currentID].status == NOT_PLAYING) continue;
         broadcastBetTurnMessage(currentID, gameInstance.m_pool, gameInstance.m_currentBet - m_playerInfoList[currentID].currentBet, m_playerInfoList[currentID].balance);
+        recvBetResponseMessage(currentID);
     }
     sendEndRoundMessage(gameInstance.m_pool);
     phase++;
@@ -263,11 +269,42 @@ void GameServer::startGameInstance() {
             if (m_playerInfoList[currentID].id == -1) continue;
             if (m_playerInfoList[currentID].status == NOT_PLAYING) continue;
             broadcastBetTurnMessage(currentID, gameInstance.m_pool, gameInstance.m_currentBet - m_playerInfoList[currentID].currentBet, m_playerInfoList[currentID].balance);
+            recvBetResponseMessage(currentID);
         }
         sendEndRoundMessage(gameInstance.m_pool);
         phase++;
         // Deal community card
         dealCommunityCard(phase);
+    }
+}
+
+void GameServer::broadcastResultMessage() {
+    int winner_id = gameInstance.getResult();
+    game::Result resultMessage{};
+    resultMessage.set_prize(gameInstance.m_pool);
+    resultMessage.set_winner_id(winner_id);
+    for (int i = 0; i < g_maxPlayerCount; ++i) {
+        if (m_playerInfoList[i].id == -1) {
+            continue;
+        }
+        game::ProtoPlayer* player;
+        player->set_id(i);
+        player->set_balance(m_playerInfoList[i].balance);
+        player->set_status(m_playerInfoList[i].status);
+        game::Result_EndPlayer* endPlayer = resultMessage.add_end_players();
+        endPlayer->set_allocated_player(player);
+        if (m_playerInfoList[i].status == PLAYING) {
+            game::ProtoCard* card0 = endPlayer->add_cards();
+            card0->set_value(gameInstance.playerHands[i].cards[0].value);
+            card0->set_suit(gameInstance.playerHands[i].cards[0].suit);
+            game::ProtoCard* card1 = endPlayer->add_cards();
+            card1->set_value(gameInstance.playerHands[i].cards[1].value);
+            card1->set_suit(gameInstance.playerHands[i].cards[1].suit);
+        }
+    }
+    for (int i = 0; i < g_maxPlayerCount; ++i) {
+        if (m_playerInfoList[i].id == -1) continue;
+        sendMessage(m_playerInfoList[i].endpoint, game::MessageType::Result, resultMessage, m_playerInfoList[i].sockfd);
     }
 }
 
@@ -323,6 +360,7 @@ void GameServer::recvBetResponseMessage(int id) {
             if (clients[i].fd == sockfd) {
                 close(sockfd);
                 clients[i].fd = -1;
+                m_playerInfoList[id].status = NOT_PLAYING;
                 m_playerInfoList[id].id = -1;
                 break;
             }
