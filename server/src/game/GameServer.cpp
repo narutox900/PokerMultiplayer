@@ -14,7 +14,7 @@ GameServer::GameServer(size_t roomID, uint16_t port)
 bool GameServer::addPlayer(const IPEndpoint& endpoint, const int16_t sockfd) {
     int id = 0;
     for (int id = 0; id < g_maxPlayerCount; id++) {
-        if (m_playerInfoList[id].id != -1) {
+        if (m_playerInfoList[id].id == -1) {
             break;
         }
     }
@@ -194,6 +194,7 @@ void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, c
         for (int i = 0; i < g_maxPlayerCount; ++i) {
             if (m_playerInfoList[i].id == -1) continue;
             sendMessage(m_playerInfoList[i].endpoint, game::MessageType::StartGameResponse, response, m_playerInfoList[i].sockfd);
+            printf("Sending startgame message to player id %d\n",i);
         }
         startGameInstance();
     }
