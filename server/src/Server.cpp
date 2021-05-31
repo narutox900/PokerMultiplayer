@@ -94,6 +94,7 @@ void Server::start() {
                 if (n == 0) {
                     close(clients[i].fd);
                     clients[i].fd = -1;
+                    continue;
                 }
                 IPEndpoint client{clients_addr[i]};
                 printf("Received %ld byte packet: %s:%d buffer\n", n, client.addressAsStr(), client.port());

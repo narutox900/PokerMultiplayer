@@ -143,6 +143,7 @@ void GameServer::startGameServer() {
                 if (n == 0) {
                     close(clients[i].fd);
                     clients[i].fd = -1;
+                    continue;
                 }
                 IPEndpoint client{clients_addr[i]};
                 printf("Received %ld byte packet: %s:%d\n", n, client.addressAsStr(), client.port());
@@ -362,10 +363,15 @@ void GameServer::recvBetResponseMessage(int id) {
                 clients[i].fd = -1;
                 m_playerInfoList[id].status = NOT_PLAYING;
                 m_playerInfoList[id].id = -1;
-                break;
+                uint8_t* buffer = m_buffer.get();
+                game::BetTurnResponse response{};
+                gameInstance.foldPlayer(id);
             }
+            sendDoneBetMessage(id, 0, m_playerInfoList[id].balance, action::FOLD);
+            return;
         }
     }
+
     n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
     int* length = (int*)m_buffer.get();
 
@@ -377,7 +383,7 @@ void GameServer::recvBetResponseMessage(int id) {
     uint8_t* buffer = m_buffer.get();
     game::MessageType mesgType = (game::MessageType)buffer[0];
     if (mesgType == game::MessageType::BetTurnResponse) {
-        game::BetTurnResponse response;
+        game::BetTurnResponse response{};
         bool parseResult = response.ParseFromArray(buffer, n - 1);
         assert(parseResult);
         int amount = response.amount();

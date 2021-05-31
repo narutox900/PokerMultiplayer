@@ -10,7 +10,7 @@
 
 class Room {
     private:
-    static constexpr uint s_maxPlayerCount = 4;
+    static constexpr uint s_maxPlayerCount = 5;
 
     ReusableIdList<Player> m_playerList;
     
