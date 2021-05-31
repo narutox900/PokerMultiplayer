@@ -13,7 +13,7 @@ GameServer::GameServer(size_t roomID, uint16_t port)
 
 bool GameServer::addPlayer(const IPEndpoint& endpoint, const int16_t sockfd) {
     int id = 0;
-    for (int id = 0; id < g_maxPlayerCount; id++) {
+    for (id = 0; id < g_maxPlayerCount; id++) {
         if (m_playerInfoList[id].id == -1) {
             break;
         }
@@ -29,6 +29,7 @@ bool GameServer::addPlayer(const IPEndpoint& endpoint, const int16_t sockfd) {
     if (m_ownerID == -1) {
         m_ownerID = id;
     }
+    printf("New player added %d, %d!\n",id,sockfd);
 
     return true;
 }
