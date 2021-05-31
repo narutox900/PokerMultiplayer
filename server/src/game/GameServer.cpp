@@ -352,6 +352,7 @@ void GameServer::sendEndRoundMessage(int total_amount) {
 void GameServer::recvBetResponseMessage(int id) {
     int sockfd = m_playerInfoList[id].sockfd;
     int n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
+    printf("Receive %d byte int \n",n);
     if (n == -1) {
         throw;
     }
@@ -372,7 +373,6 @@ void GameServer::recvBetResponseMessage(int id) {
         }
     }
 
-    n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
     int* length = (int*)m_buffer.get();
 
     n = recv(sockfd, m_buffer.get(), *length + 1, 0);
