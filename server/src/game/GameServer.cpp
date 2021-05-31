@@ -146,18 +146,20 @@ void GameServer::startGameServer() {
                     continue;
                 }
                 IPEndpoint client{clients_addr[i]};
-                printf("Received %ld byte packet: %s:%d\n", n, client.addressAsStr(), client.port());
+                printf("GameRoom Received %ld byte packet: %s:%d\n", n, client.addressAsStr(), client.port());
                 n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
                 int* length = (int*)m_buffer.get();
+                printf("Length+1 of payload is %d\n",*length);
 
                 n = recv(sockfd, m_buffer.get(), *length + 1, 0);
-                printf("receiving %ld bytes\n", n);
+                printf("Gameroom receiving %ld bytes\n", n);
                 if (n == -1) {
                     printf("Socket read error: errorno %d", errno);
                     break;
                 }
 
                 if (n >= s_bufferSize) {
+                    printf("n >= s_buffersize\n");
                     continue;
                 }
                 handleMessage(sockfd, m_buffer.get(), n, client);
