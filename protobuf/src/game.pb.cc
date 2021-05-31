@@ -46,7 +46,8 @@ struct ProtoPlayerDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ProtoPlayerDefaultTypeInternal _ProtoPlayer_default_instance_;
 constexpr StartGameRequest::StartGameRequest(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : id_(0u){}
+  : id_(0u)
+  , success_(false){}
 struct StartGameRequestDefaultTypeInternal {
   constexpr StartGameRequestDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -205,6 +206,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_game_2eproto::offsets[] PROTOB
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::game::StartGameRequest, id_),
+  PROTOBUF_FIELD_OFFSET(::game::StartGameRequest, success_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::game::StartGameResponse, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -278,15 +280,15 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 0, -1, sizeof(::game::ProtoCard)},
   { 7, -1, sizeof(::game::ProtoPlayer)},
   { 15, -1, sizeof(::game::StartGameRequest)},
-  { 21, -1, sizeof(::game::StartGameResponse)},
-  { 29, -1, sizeof(::game::DealCards)},
-  { 35, -1, sizeof(::game::DealCommunityCards)},
-  { 42, -1, sizeof(::game::Result_EndPlayer)},
-  { 49, -1, sizeof(::game::Result)},
-  { 57, -1, sizeof(::game::BetTurn)},
-  { 66, -1, sizeof(::game::BetTurnResponse)},
-  { 74, -1, sizeof(::game::DoneBet)},
-  { 83, -1, sizeof(::game::EndRound)},
+  { 22, -1, sizeof(::game::StartGameResponse)},
+  { 30, -1, sizeof(::game::DealCards)},
+  { 36, -1, sizeof(::game::DealCommunityCards)},
+  { 43, -1, sizeof(::game::Result_EndPlayer)},
+  { 50, -1, sizeof(::game::Result)},
+  { 58, -1, sizeof(::game::BetTurn)},
+  { 67, -1, sizeof(::game::BetTurnResponse)},
+  { 75, -1, sizeof(::game::DoneBet)},
+  { 84, -1, sizeof(::game::EndRound)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -308,28 +310,28 @@ const char descriptor_table_protodef_game_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\n\ngame.proto\022\004game\"(\n\tProtoCard\022\r\n\005value"
   "\030\001 \001(\r\022\014\n\004suit\030\002 \001(\r\":\n\013ProtoPlayer\022\n\n\002i"
   "d\030\001 \001(\r\022\017\n\007balance\030\002 \001(\r\022\016\n\006status\030\003 \001(\005"
-  "\"\036\n\020StartGameRequest\022\n\n\002id\030\001 \001(\r\"[\n\021Star"
-  "tGameResponse\022\021\n\tdealer_id\030\001 \001(\r\022\"\n\007play"
-  "ers\030\002 \003(\0132\021.game.ProtoPlayer\022\017\n\007success\030"
-  "\003 \001(\010\"+\n\tDealCards\022\036\n\005cards\030\001 \003(\0132\017.game"
-  ".ProtoCard\"C\n\022DealCommunityCards\022\r\n\005phas"
-  "e\030\001 \001(\r\022\036\n\005cards\030\002 \003(\0132\017.game.ProtoCard\""
-  "\247\001\n\006Result\022+\n\013end_players\030\001 \003(\0132\026.game.R"
-  "esult.EndPlayer\022\021\n\twinner_id\030\002 \001(\r\022\r\n\005pr"
-  "ize\030\003 \001(\r\032N\n\tEndPlayer\022!\n\006player\030\001 \001(\0132\021"
-  ".game.ProtoPlayer\022\036\n\005cards\030\002 \003(\0132\017.game."
-  "ProtoCard\"S\n\007BetTurn\022\021\n\tplayer_id\030\001 \001(\r\022"
-  "\024\n\014current_pool\030\002 \001(\r\022\016\n\006amount\030\003 \001(\r\022\017\n"
-  "\007balance\030\004 \001(\r\"D\n\017BetTurnResponse\022\021\n\tpla"
-  "yer_id\030\001 \001(\r\022\016\n\006action\030\002 \001(\r\022\016\n\006amount\030\003"
-  " \001(\r\"X\n\007DoneBet\022\021\n\tplayer_id\030\001 \001(\r\022\022\n\nbe"
-  "t_amount\030\002 \001(\r\022\026\n\016player_balance\030\003 \001(\r\022\016"
-  "\n\006action\030\004 \001(\r\" \n\010EndRound\022\024\n\014total_amou"
-  "nt\030\001 \001(\rb\006proto3"
+  "\"/\n\020StartGameRequest\022\n\n\002id\030\001 \001(\r\022\017\n\007succ"
+  "ess\030\002 \001(\010\"[\n\021StartGameResponse\022\021\n\tdealer"
+  "_id\030\001 \001(\r\022\"\n\007players\030\002 \003(\0132\021.game.ProtoP"
+  "layer\022\017\n\007success\030\003 \001(\010\"+\n\tDealCards\022\036\n\005c"
+  "ards\030\001 \003(\0132\017.game.ProtoCard\"C\n\022DealCommu"
+  "nityCards\022\r\n\005phase\030\001 \001(\r\022\036\n\005cards\030\002 \003(\0132"
+  "\017.game.ProtoCard\"\247\001\n\006Result\022+\n\013end_playe"
+  "rs\030\001 \003(\0132\026.game.Result.EndPlayer\022\021\n\twinn"
+  "er_id\030\002 \001(\r\022\r\n\005prize\030\003 \001(\r\032N\n\tEndPlayer\022"
+  "!\n\006player\030\001 \001(\0132\021.game.ProtoPlayer\022\036\n\005ca"
+  "rds\030\002 \003(\0132\017.game.ProtoCard\"S\n\007BetTurn\022\021\n"
+  "\tplayer_id\030\001 \001(\r\022\024\n\014current_pool\030\002 \001(\r\022\016"
+  "\n\006amount\030\003 \001(\r\022\017\n\007balance\030\004 \001(\r\"D\n\017BetTu"
+  "rnResponse\022\021\n\tplayer_id\030\001 \001(\r\022\016\n\006action\030"
+  "\002 \001(\r\022\016\n\006amount\030\003 \001(\r\"X\n\007DoneBet\022\021\n\tplay"
+  "er_id\030\001 \001(\r\022\022\n\nbet_amount\030\002 \001(\r\022\026\n\016playe"
+  "r_balance\030\003 \001(\r\022\016\n\006action\030\004 \001(\r\" \n\010EndRo"
+  "und\022\024\n\014total_amount\030\001 \001(\rb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_game_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_game_2eproto = {
-  false, false, 816, descriptor_table_protodef_game_2eproto, "game.proto", 
+  false, false, 833, descriptor_table_protodef_game_2eproto, "game.proto", 
   &descriptor_table_game_2eproto_once, nullptr, 0, 12,
   schemas, file_default_instances, TableStruct_game_2eproto::offsets,
   file_level_metadata_game_2eproto, file_level_enum_descriptors_game_2eproto, file_level_service_descriptors_game_2eproto,
@@ -830,12 +832,17 @@ StartGameRequest::StartGameRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
 StartGameRequest::StartGameRequest(const StartGameRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  id_ = from.id_;
+  ::memcpy(&id_, &from.id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&success_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(success_));
   // @@protoc_insertion_point(copy_constructor:game.StartGameRequest)
 }
 
 void StartGameRequest::SharedCtor() {
-id_ = 0u;
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&id_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&success_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(success_));
 }
 
 StartGameRequest::~StartGameRequest() {
@@ -864,7 +871,9 @@ void StartGameRequest::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  id_ = 0u;
+  ::memset(&id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&success_) -
+      reinterpret_cast<char*>(&id_)) + sizeof(success_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -879,6 +888,13 @@ const char* StartGameRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPA
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
           id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // bool success = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -916,6 +932,12 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_id(), target);
   }
 
+  // bool success = 2;
+  if (this->success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(2, this->_internal_success(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -937,6 +959,11 @@ size_t StartGameRequest::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_id());
+  }
+
+  // bool success = 2;
+  if (this->success() != 0) {
+    total_size += 1 + 1;
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -973,6 +1000,9 @@ void StartGameRequest::MergeFrom(const StartGameRequest& from) {
   if (from.id() != 0) {
     _internal_set_id(from._internal_id());
   }
+  if (from.success() != 0) {
+    _internal_set_success(from._internal_success());
+  }
 }
 
 void StartGameRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -996,7 +1026,12 @@ bool StartGameRequest::IsInitialized() const {
 void StartGameRequest::InternalSwap(StartGameRequest* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  swap(id_, other->id_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(StartGameRequest, success_)
+      + sizeof(StartGameRequest::success_)
+      - PROTOBUF_FIELD_OFFSET(StartGameRequest, id_)>(
+          reinterpret_cast<char*>(&id_),
+          reinterpret_cast<char*>(&other->id_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StartGameRequest::GetMetadata() const {

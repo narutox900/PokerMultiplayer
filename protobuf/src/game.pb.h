@@ -531,6 +531,7 @@ class StartGameRequest PROTOBUF_FINAL :
 
   enum : int {
     kIdFieldNumber = 1,
+    kSuccessFieldNumber = 2,
   };
   // uint32 id = 1;
   void clear_id();
@@ -541,6 +542,15 @@ class StartGameRequest PROTOBUF_FINAL :
   void _internal_set_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
+  // bool success = 2;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:game.StartGameRequest)
  private:
   class _Internal;
@@ -549,6 +559,7 @@ class StartGameRequest PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::uint32 id_;
+  bool success_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_game_2eproto;
 };
@@ -2132,6 +2143,26 @@ inline void StartGameRequest::_internal_set_id(::PROTOBUF_NAMESPACE_ID::uint32 v
 inline void StartGameRequest::set_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   _internal_set_id(value);
   // @@protoc_insertion_point(field_set:game.StartGameRequest.id)
+}
+
+// bool success = 2;
+inline void StartGameRequest::clear_success() {
+  success_ = false;
+}
+inline bool StartGameRequest::_internal_success() const {
+  return success_;
+}
+inline bool StartGameRequest::success() const {
+  // @@protoc_insertion_point(field_get:game.StartGameRequest.success)
+  return _internal_success();
+}
+inline void StartGameRequest::_internal_set_success(bool value) {
+  
+  success_ = value;
+}
+inline void StartGameRequest::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:game.StartGameRequest.success)
 }
 
 // -------------------------------------------------------------------
