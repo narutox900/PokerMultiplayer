@@ -147,7 +147,6 @@ void GameServer::startGameServer() {
                 }
                 IPEndpoint client{clients_addr[i]};
                 printf("GameRoom Received %ld byte packet: %s:%d\n", n, client.addressAsStr(), client.port());
-                n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
                 int* length = (int*)m_buffer.get();
                 printf("Length+1 of payload is %d\n",*length);
 

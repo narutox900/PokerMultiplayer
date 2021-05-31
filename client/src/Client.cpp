@@ -172,7 +172,7 @@ void Client::sendMessage(int sockfd, network::MessageType type, const google::pr
     buffer[sizeof(int)] = (uint8_t)type;
     bool ret = message.SerializeToArray(buffer + 1 + sizeof(int), messageSize);
     assert(ret);  //Write message
-    m_socket.send(sockfd, buffer, messageSize + 1+sizeof(int));
+    m_socket.send(sockfd, buffer, messageSize + 1 + sizeof(int));
 }
 
 static void printProtoAsJson(google::protobuf::Message& proto) {
