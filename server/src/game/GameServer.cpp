@@ -100,6 +100,8 @@ void GameServer::startGameServer() {
                    inet_ntoa(cliaddr.sin_addr),
                    ntohs(cliaddr.sin_port));
 
+            addPlayer(IPEndpoint(cliaddr), connfd);
+
             // Save client socket into clients array
             for (i = 0; i < maxi + 1; i++) {
                 if (clients[i].fd < 0) {
