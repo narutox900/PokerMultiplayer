@@ -29,7 +29,7 @@ bool GameServer::addPlayer(const IPEndpoint& endpoint, const int16_t sockfd) {
     if (m_ownerID == -1) {
         m_ownerID = id;
     }
-    printf("New player added %d, %d!\n",id,sockfd);
+    printf("New player added %d, %d!\n", id, sockfd);
 
     return true;
 }
@@ -151,7 +151,7 @@ void GameServer::startGameServer() {
                 IPEndpoint client{clients_addr[i]};
                 printf("GameRoom Received %ld byte packet: %s:%d\n", n, client.addressAsStr(), client.port());
                 int* length = (int*)m_buffer.get();
-                printf("Length+1 of payload is %d\n",*length);
+                printf("Length+1 of payload is %d\n", *length);
 
                 n = recv(sockfd, m_buffer.get(), *length + 1, 0);
                 printf("Gameroom receiving %ld bytes\n", n);
@@ -173,8 +173,11 @@ void GameServer::startGameServer() {
 void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, const IPEndpoint& client) {
     game::MessageType mesgType = (game::MessageType)buffer[0];
     if (mesgType == game::MessageType::StartGameRequest) {
+        if (sockfd != m_playerInfoList[m_ownerID].sockfd) return;
         game::StartGameResponse response{};
+
         response.set_dealer_id(m_ownerID);
+
         for (int i = 0; i < g_maxPlayerCount; ++i) {
             if (m_playerInfoList[i].id == -1) continue;
             if (m_playerInfoList[i].balance < 2 * g_baseBetValue) {
@@ -195,8 +198,9 @@ void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, c
         for (int i = 0; i < g_maxPlayerCount; ++i) {
             if (m_playerInfoList[i].id == -1) continue;
             sendMessage(m_playerInfoList[i].endpoint, game::MessageType::StartGameResponse, response, m_playerInfoList[i].sockfd);
-            printf("Sending startgame message to player id %d\n",i);
+            printf("Sending startgame message to player id %d\n", i);
         }
+        if (response.success() == false) return;
         startGameInstance();
     }
 }
@@ -357,7 +361,7 @@ void GameServer::sendEndRoundMessage(int total_amount) {
 void GameServer::recvBetResponseMessage(int id) {
     int sockfd = m_playerInfoList[id].sockfd;
     int n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
-    printf("Receive %d byte int \n",n);
+    printf("Receive %d byte int \n", n);
     if (n == -1) {
         throw;
     }

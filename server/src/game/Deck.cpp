@@ -1,4 +1,5 @@
 #include "Deck.hpp"
+
 #include <algorithm>
 #include <random>
 
@@ -8,16 +9,17 @@ Deck::Deck() {
     for (int i = 2; i <= 14; ++i) {
         for (int j = 0; j < 4; ++j) {
             Card card;
-            card.suit=j;
-            card.value=i;
+            card.suit = j;
+            card.value = i;
             m_cards.push_back(card);
         }
     }
+    shuffle();
 }
 
 void Deck::shuffle() {
-    auto rd = std::random_device {}; 
-    auto rng = std::default_random_engine { rd() };
+    auto rd = std::random_device{};
+    auto rng = std::default_random_engine{rd()};
     std::shuffle(m_cards.begin(), m_cards.end(), rng);
 }
 
