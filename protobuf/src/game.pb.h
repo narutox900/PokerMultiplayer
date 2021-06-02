@@ -1818,6 +1818,7 @@ class DoneBet PROTOBUF_FINAL :
     kBetAmountFieldNumber = 2,
     kPlayerBalanceFieldNumber = 3,
     kActionFieldNumber = 4,
+    kCurrentBetFieldNumber = 5,
   };
   // uint32 player_id = 1;
   void clear_player_id();
@@ -1855,6 +1856,15 @@ class DoneBet PROTOBUF_FINAL :
   void _internal_set_action(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
+  // uint32 current_bet = 5;
+  void clear_current_bet();
+  ::PROTOBUF_NAMESPACE_ID::uint32 current_bet() const;
+  void set_current_bet(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_current_bet() const;
+  void _internal_set_current_bet(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:game.DoneBet)
  private:
   class _Internal;
@@ -1866,6 +1876,7 @@ class DoneBet PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::uint32 bet_amount_;
   ::PROTOBUF_NAMESPACE_ID::uint32 player_balance_;
   ::PROTOBUF_NAMESPACE_ID::uint32 action_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 current_bet_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_game_2eproto;
 };
@@ -2793,6 +2804,26 @@ inline void DoneBet::_internal_set_action(::PROTOBUF_NAMESPACE_ID::uint32 value)
 inline void DoneBet::set_action(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   _internal_set_action(value);
   // @@protoc_insertion_point(field_set:game.DoneBet.action)
+}
+
+// uint32 current_bet = 5;
+inline void DoneBet::clear_current_bet() {
+  current_bet_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 DoneBet::_internal_current_bet() const {
+  return current_bet_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 DoneBet::current_bet() const {
+  // @@protoc_insertion_point(field_get:game.DoneBet.current_bet)
+  return _internal_current_bet();
+}
+inline void DoneBet::_internal_set_current_bet(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  current_bet_ = value;
+}
+inline void DoneBet::set_current_bet(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_current_bet(value);
+  // @@protoc_insertion_point(field_set:game.DoneBet.current_bet)
 }
 
 // -------------------------------------------------------------------

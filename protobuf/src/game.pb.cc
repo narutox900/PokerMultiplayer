@@ -157,7 +157,8 @@ constexpr DoneBet::DoneBet(
   : player_id_(0u)
   , bet_amount_(0u)
   , player_balance_(0u)
-  , action_(0u){}
+  , action_(0u)
+  , current_bet_(0u){}
 struct DoneBetDefaultTypeInternal {
   constexpr DoneBetDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -269,6 +270,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_game_2eproto::offsets[] PROTOB
   PROTOBUF_FIELD_OFFSET(::game::DoneBet, bet_amount_),
   PROTOBUF_FIELD_OFFSET(::game::DoneBet, player_balance_),
   PROTOBUF_FIELD_OFFSET(::game::DoneBet, action_),
+  PROTOBUF_FIELD_OFFSET(::game::DoneBet, current_bet_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::game::EndRound, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -288,7 +290,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 58, -1, sizeof(::game::BetTurn)},
   { 67, -1, sizeof(::game::BetTurnResponse)},
   { 75, -1, sizeof(::game::DoneBet)},
-  { 84, -1, sizeof(::game::EndRound)},
+  { 85, -1, sizeof(::game::EndRound)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -324,14 +326,15 @@ const char descriptor_table_protodef_game_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\tplayer_id\030\001 \001(\r\022\024\n\014current_pool\030\002 \001(\r\022\016"
   "\n\006amount\030\003 \001(\r\022\017\n\007balance\030\004 \001(\r\"D\n\017BetTu"
   "rnResponse\022\021\n\tplayer_id\030\001 \001(\r\022\016\n\006action\030"
-  "\002 \001(\r\022\016\n\006amount\030\003 \001(\r\"X\n\007DoneBet\022\021\n\tplay"
+  "\002 \001(\r\022\016\n\006amount\030\003 \001(\r\"m\n\007DoneBet\022\021\n\tplay"
   "er_id\030\001 \001(\r\022\022\n\nbet_amount\030\002 \001(\r\022\026\n\016playe"
-  "r_balance\030\003 \001(\r\022\016\n\006action\030\004 \001(\r\" \n\010EndRo"
-  "und\022\024\n\014total_amount\030\001 \001(\rb\006proto3"
+  "r_balance\030\003 \001(\r\022\016\n\006action\030\004 \001(\r\022\023\n\013curre"
+  "nt_bet\030\005 \001(\r\" \n\010EndRound\022\024\n\014total_amount"
+  "\030\001 \001(\rb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_game_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_game_2eproto = {
-  false, false, 833, descriptor_table_protodef_game_2eproto, "game.proto", 
+  false, false, 854, descriptor_table_protodef_game_2eproto, "game.proto", 
   &descriptor_table_game_2eproto_once, nullptr, 0, 12,
   schemas, file_default_instances, TableStruct_game_2eproto::offsets,
   file_level_metadata_game_2eproto, file_level_enum_descriptors_game_2eproto, file_level_service_descriptors_game_2eproto,
@@ -2733,16 +2736,16 @@ DoneBet::DoneBet(const DoneBet& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&player_id_, &from.player_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&action_) -
-    reinterpret_cast<char*>(&player_id_)) + sizeof(action_));
+    static_cast<size_t>(reinterpret_cast<char*>(&current_bet_) -
+    reinterpret_cast<char*>(&player_id_)) + sizeof(current_bet_));
   // @@protoc_insertion_point(copy_constructor:game.DoneBet)
 }
 
 void DoneBet::SharedCtor() {
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&player_id_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&action_) -
-    reinterpret_cast<char*>(&player_id_)) + sizeof(action_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&current_bet_) -
+    reinterpret_cast<char*>(&player_id_)) + sizeof(current_bet_));
 }
 
 DoneBet::~DoneBet() {
@@ -2772,8 +2775,8 @@ void DoneBet::Clear() {
   (void) cached_has_bits;
 
   ::memset(&player_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&action_) -
-      reinterpret_cast<char*>(&player_id_)) + sizeof(action_));
+      reinterpret_cast<char*>(&current_bet_) -
+      reinterpret_cast<char*>(&player_id_)) + sizeof(current_bet_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2809,6 +2812,13 @@ const char* DoneBet::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
           action_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 current_bet = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+          current_bet_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -2864,6 +2874,12 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_action(), target);
   }
 
+  // uint32 current_bet = 5;
+  if (this->current_bet() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->_internal_current_bet(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -2906,6 +2922,13 @@ size_t DoneBet::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_action());
+  }
+
+  // uint32 current_bet = 5;
+  if (this->current_bet() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_current_bet());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2951,6 +2974,9 @@ void DoneBet::MergeFrom(const DoneBet& from) {
   if (from.action() != 0) {
     _internal_set_action(from._internal_action());
   }
+  if (from.current_bet() != 0) {
+    _internal_set_current_bet(from._internal_current_bet());
+  }
 }
 
 void DoneBet::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -2975,8 +3001,8 @@ void DoneBet::InternalSwap(DoneBet* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(DoneBet, action_)
-      + sizeof(DoneBet::action_)
+      PROTOBUF_FIELD_OFFSET(DoneBet, current_bet_)
+      + sizeof(DoneBet::current_bet_)
       - PROTOBUF_FIELD_OFFSET(DoneBet, player_id_)>(
           reinterpret_cast<char*>(&player_id_),
           reinterpret_cast<char*>(&other->player_id_));

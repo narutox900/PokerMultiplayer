@@ -432,6 +432,7 @@ void GameServer::sendDoneBetMessage(int id, int amount, int balance, int action)
     doneBetMessage.set_action(action);
     doneBetMessage.set_bet_amount(amount);
     doneBetMessage.set_player_balance(balance);
+    doneBetMessage.set_current_bet(m_playerInfoList[id].currentBet);
 
     for (int i = 0; i < g_maxPlayerCount; i++) {
         if (m_playerInfoList[i].id == -1) continue;

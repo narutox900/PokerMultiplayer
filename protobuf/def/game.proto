@@ -77,6 +77,7 @@ message DoneBet {
     uint32 bet_amount = 2; // Total amount of player's bet in that turn
     uint32 player_balance = 3; // that player's money left
     uint32 action = 4;
+    uint32 current_bet = 5;
 }
 
 //broadcast to all clients

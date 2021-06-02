@@ -38,7 +38,7 @@ void Game::callPlayer(int id) {
 void Game::raisePlayer(int id, int amount) {
     (*m_playerInfoList)[id].balance -= amount;
     (*m_playerInfoList)[id].currentBet += amount;
-    m_currentBet = amount;
+    m_currentBet += amount;
     m_pool += amount;
     m_endTurnID = id;
 }
