@@ -223,6 +223,7 @@ void GameServer::startGameInstance() {
             game::ProtoCard* protocard1 = dealCard.add_cards();
             protocard1->set_suit(card1.suit);
             protocard1->set_value(card1.value);
+            printf("Sending deal card message to player %d\n",i);
             sendMessage(m_playerInfoList[i].endpoint, game::MessageType::DealCards, dealCard, m_playerInfoList[i].sockfd);
             // default bet amount
             m_playerInfoList[i].balance -= g_baseBetValue;
@@ -315,6 +316,7 @@ void GameServer::broadcastResultMessage() {
     for (int i = 0; i < g_maxPlayerCount; ++i) {
         if (m_playerInfoList[i].id == -1) continue;
         sendMessage(m_playerInfoList[i].endpoint, game::MessageType::Result, resultMessage, m_playerInfoList[i].sockfd);
+        printf("Sending result message to player %d\n",i);
     }
 }
 
@@ -342,6 +344,7 @@ void GameServer::dealCommunityCard(int phase) {
     for (int i = 0; i < g_maxPlayerCount; i++) {
         if (m_playerInfoList[i].id == -1) continue;
         sendMessage(m_playerInfoList[i].endpoint, game::MessageType::DealCommunityCards, dealCommunityMessage, m_playerInfoList[i].sockfd);
+        printf("Sending deal community card message to player %d\n");
     }
 }
 
@@ -352,6 +355,7 @@ void GameServer::sendEndRoundMessage(int total_amount) {
         if (m_playerInfoList[i].id == -1) continue;
         sendMessage(m_playerInfoList[i].endpoint, game::MessageType::EndRound, endRoundMessage, m_playerInfoList[i].sockfd);
         // reset current bet
+        printf("Sending end round message to player %d\n",i);
         m_playerInfoList[i].currentBet = 0;
     }
     // reset current bet
@@ -425,6 +429,7 @@ void GameServer::sendDoneBetMessage(int id, int amount, int balance, int action)
 
     for (int i = 0; i < g_maxPlayerCount; i++) {
         if (m_playerInfoList[i].id == -1) continue;
+        printf("Sending done bet message to player %d\n",i);
         sendMessage(m_playerInfoList[i].endpoint, game::MessageType::DoneBet, doneBetMessage, m_playerInfoList[i].sockfd);
     }
 }
@@ -437,6 +442,7 @@ void GameServer::broadcastBetTurnMessage(int id, int currentPool, int amount, in
     betTurnMessage.set_balance(balance);
     for (int i = 0; i < g_maxPlayerCount; i++) {
         if (m_playerInfoList[i].id == -1) continue;
+        printf("Sending bet turn message to player %d\n",i);
         sendMessage(m_playerInfoList[i].endpoint, game::MessageType::BetTurn, betTurnMessage, m_playerInfoList[i].sockfd);
     }
 }
