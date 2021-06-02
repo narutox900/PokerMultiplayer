@@ -233,6 +233,7 @@ void GameServer::startGameInstance() {
             gameInstance.m_pool += g_baseBetValue;
         }
     }
+    gameInstance.m_currentBet = g_baseBetValue;
     // broadcast betturn message
     int currentID = firstID;
     broadcastBetTurnMessage(currentID, gameInstance.m_pool, gameInstance.m_currentBet - m_playerInfoList[currentID].currentBet, m_playerInfoList[currentID].balance);

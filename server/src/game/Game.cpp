@@ -40,6 +40,7 @@ void Game::raisePlayer(int id, int amount) {
     m_playerInfoList[id].currentBet += amount;
     m_currentBet = amount;
     m_pool += amount;
+    m_endTurnID = id;
 }
 
 int Game::isStraightFlush(Card* cards) {
