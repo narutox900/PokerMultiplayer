@@ -26,6 +26,7 @@ bool GameServer::addPlayer(const IPEndpoint& endpoint, const int16_t sockfd) {
     m_playerInfoList[id].sockfd = sockfd;
     m_playerInfoList[id].connectionState = PlayerInfo::ConnectionState::Connected;
     m_playerInfoList[id].balance = DEFAULTBALANCE;
+    m_playerInfoList[id].currentBet = 0;
     if (m_ownerID == -1) {
         m_ownerID = id;
     }
@@ -185,6 +186,7 @@ void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, c
                 continue;
             }
             m_playerInfoList[i].status = PLAYING;
+            m_playerInfoList[i].currentBet = 0;
             game::ProtoPlayer* player = response.add_players();
             player->set_id(m_playerInfoList[i].id);
             player->set_balance(m_playerInfoList[i].balance);
@@ -260,6 +262,7 @@ void GameServer::startGameInstance() {
     // phase 2 3 4 is the same
     while (1) {
         if (phase == 5) break;
+        gameInstance.m_currentBet = 0;
         // one time for the first player
         gameInstance.m_endTurnID = firstID;
         if (m_playerInfoList[firstID].status == PLAYING && m_playerInfoList[firstID].id != -1) {
@@ -287,6 +290,7 @@ void GameServer::startGameInstance() {
         // Deal community card
         dealCommunityCard(phase);
     }
+    broadcastResultMessage();
 }
 
 void GameServer::broadcastResultMessage() {
@@ -344,7 +348,7 @@ void GameServer::dealCommunityCard(int phase) {
     for (int i = 0; i < g_maxPlayerCount; i++) {
         if (m_playerInfoList[i].id == -1) continue;
         sendMessage(m_playerInfoList[i].endpoint, game::MessageType::DealCommunityCards, dealCommunityMessage, m_playerInfoList[i].sockfd);
-        printf("Sending deal community card message to player %d\n");
+        printf("Sending deal community card message to player %d\n",i);
     }
 }
 
