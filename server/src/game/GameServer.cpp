@@ -334,10 +334,10 @@ void GameServer::dealCommunityCard(int phase) {
         game::ProtoCard* first_card = dealCommunityMessage.add_cards();
         first_card->set_suit(tmp.suit);
         first_card->set_value(tmp.value);
-        tmp = gameInstance.dealCommunityCard();
+        Card tmp2 = gameInstance.dealCommunityCard();
         game::ProtoCard* second_card = dealCommunityMessage.add_cards();
-        second_card->set_suit(tmp.suit);
-        second_card->set_value(tmp.value);
+        second_card->set_suit(tmp2.suit);
+        second_card->set_value(tmp2.value);
     } else if (phase == 5) {
         return;
     } else {

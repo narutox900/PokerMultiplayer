@@ -3,7 +3,7 @@
 namespace game {
 
 Game::Game(std::array<PlayerInfo, 5>& playerInfoList) : m_deck(), m_currentBet(0), m_pool(0), m_endTurnID(-1), m_activePlayerCount(0) {
-    m_playerInfoList = playerInfoList;
+    m_playerInfoList = &playerInfoList;
     for (int i = 0; i < 5; ++i) {
         m_communityCards[i].value = -1;
     }
@@ -27,17 +27,17 @@ Card Game::dealCommunityCard() {
     return tmp;
 }
 void Game::foldPlayer(int id) {
-    m_playerInfoList[id].status = NOT_PLAYING;
+    (*m_playerInfoList)[id].status = NOT_PLAYING;
     m_activePlayerCount--;
 }
 void Game::callPlayer(int id) {
-    m_playerInfoList[id].balance -= m_currentBet - m_playerInfoList[id].currentBet;
-    m_pool += m_currentBet - m_playerInfoList[id].currentBet;
-    m_playerInfoList[id].currentBet = m_currentBet;
+    (*m_playerInfoList)[id].balance -= m_currentBet - (*m_playerInfoList)[id].currentBet;
+    m_pool += m_currentBet - (*m_playerInfoList)[id].currentBet;
+    (*m_playerInfoList)[id].currentBet = m_currentBet;
 }
 void Game::raisePlayer(int id, int amount) {
-    m_playerInfoList[id].balance -= amount;
-    m_playerInfoList[id].currentBet += amount;
+    (*m_playerInfoList)[id].balance -= amount;
+    (*m_playerInfoList)[id].currentBet += amount;
     m_currentBet = amount;
     m_pool += amount;
     m_endTurnID = id;
@@ -228,7 +228,7 @@ Card* Game::sortCardsByValue(Card* cards) {
 }
 
 int Game::calculatePoint(int id) {
-    if (m_playerInfoList[id].id == -1) {
+    if ((*m_playerInfoList)[id].id == -1) {
         return false;
     }
     Card cards[7];
@@ -254,15 +254,15 @@ int Game::calculatePoint(int id) {
 int Game::getResult() {
     if (m_activePlayerCount < 2) {
         for (int i = 0; i < g_maxPlayerCount; ++i) {
-            if (m_playerInfoList[i].id != -1 && m_playerInfoList[i].status == PLAYING) {
-                m_playerInfoList[i].balance += m_pool;
+            if ((*m_playerInfoList)[i].id != -1 && (*m_playerInfoList)[i].status == PLAYING) {
+                (*m_playerInfoList)[i].balance += m_pool;
                 return i;
             }
         }
     }
     int result[g_maxPlayerCount];
     for (int i = 0; i < g_maxPlayerCount; ++i) {
-        if (m_playerInfoList[i].id != -1 && m_playerInfoList[i].status == PLAYING) {
+        if ((*m_playerInfoList)[i].id != -1 && (*m_playerInfoList)[i].status == PLAYING) {
             result[i] = calculatePoint(i);
         } else
             result[i] = -1;

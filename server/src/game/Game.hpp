@@ -33,7 +33,7 @@ class Game {
     int m_endTurnID;
     int m_activePlayerCount;
     int m_pool;
-    std::array<PlayerInfo, 5> m_playerInfoList;
+    std::array<PlayerInfo, 5>* m_playerInfoList;
     std::array<Player, 5> playerHands;
 
    public:
@@ -66,6 +66,7 @@ class Game {
         m_currentBet = -1;
         m_endTurnID = -1;
         m_pool = -1;
+        m_playerInfoList;
     };
     Game(std::array<PlayerInfo, 5>& playerInfoList);
     void dealPlayerCards(int id);
