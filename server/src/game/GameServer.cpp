@@ -400,6 +400,7 @@ void GameServer::recvBetResponseMessage(int id) {
     }
     uint8_t* buffer = m_buffer.get();
     game::MessageType mesgType = (game::MessageType)buffer[0];
+    buffer+=1;
     if (mesgType == game::MessageType::BetTurnResponse) {
         game::BetTurnResponse response{};
         bool parseResult = response.ParseFromArray(buffer, n - 1);
