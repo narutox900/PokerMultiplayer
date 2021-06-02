@@ -16,7 +16,7 @@ void Game::dealPlayerCards(int id) {
 
 Card Game::dealCommunityCard() {
     for (int i = 0; i < 5; ++i) {
-        if (m_communityCards[i].value != -1) {
+        if (m_communityCards[i].value == -1) {
             m_communityCards[i] = m_deck.deal();
             return m_communityCards[i];
         }
