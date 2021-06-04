@@ -82,7 +82,7 @@ int Game::isFullHouse(Card* cards) {
         if (cards[i].value == cards[i + 1].value) {
             countThree++;
             if (countThree == 2) {
-                for (int j = 0; j < i - 3; j++) {
+                for (int j = 0; j < i - 1; j++) {
                     if (cards[j].value == cards[j + 1].value) {
                         countTwo++;
                         if (countTwo == 1) {
@@ -92,7 +92,7 @@ int Game::isFullHouse(Card* cards) {
                         countTwo = 0;
                 }
                 countTwo = 0;
-                for (int j = i + 1; j < 7 - 1; ++j) {
+                for (int j = i + 2; j < 7 - 1; ++j) {
                     if (cards[j].value == cards[j + 1].value) {
                         countTwo++;
                         if (countTwo == 1) {
