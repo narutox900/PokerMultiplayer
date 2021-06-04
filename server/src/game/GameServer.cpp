@@ -310,12 +310,10 @@ void GameServer::broadcastResultMessage() {
         if (m_playerInfoList[i].id == -1) {
             continue;
         }
-        game::ProtoPlayer* player;
-        player->set_id(i);
-        player->set_balance(m_playerInfoList[i].balance);
-        player->set_status(m_playerInfoList[i].status);
         game::Result_EndPlayer* endPlayer = resultMessage.add_end_players();
-        endPlayer->set_allocated_player(player);
+        endPlayer->mutable_player()->set_id(i);
+        endPlayer->mutable_player()->set_status(m_playerInfoList[i].status);
+        endPlayer->mutable_player()->set_balance(m_playerInfoList[i].balance);
         if (m_playerInfoList[i].id != -1 && m_playerInfoList[i].status == PLAYING) {
             game::ProtoCard* card0 = endPlayer->add_cards();
             card0->set_value(gameInstance.playerHands[i].cards[0].value);
