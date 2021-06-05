@@ -9,6 +9,7 @@ GameServer::GameServer(size_t roomID, uint16_t port)
         player.id = -1;
     }
     m_ownerID = -1;
+    m_isPlaying = false;
 }
 
 bool GameServer::addPlayer(const IPEndpoint& endpoint, const int16_t sockfd) {
@@ -51,6 +52,10 @@ bool GameServer::removePlayer(int id) {
         if (m_ownerID == id) m_ownerID = -1;
     }
     return true;
+}
+
+bool GameServer::getPlayingStatus() {
+    return m_isPlaying;
 }
 
 void GameServer::start() {
@@ -143,6 +148,7 @@ void GameServer::startGameServer() {
                 // Get message length
                 n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
                 if (n == -1) {
+                    printf("throw n == -1 in game server\n");
                     throw;
                 }
                 if (n == 0) {
@@ -216,6 +222,7 @@ void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, c
 
 void GameServer::startGameInstance() {
     // start new game instance
+    m_isPlaying =true;
     gameInstance = Game(m_playerInfoList);
     int firstID = m_ownerID;
     // All people bet the base value
@@ -301,6 +308,7 @@ void GameServer::startGameInstance() {
         dealCommunityCard(phase);
     }
     broadcastResultMessage();
+    m_isPlaying = false;
 }
 
 void GameServer::broadcastResultMessage() {

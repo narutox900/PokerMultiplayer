@@ -43,7 +43,6 @@ void Server::start() {
         if (clients[0].revents & POLLRDNORM) {
             connfd = m_socket.accept(&cliaddr);
             if (connfd < 0) {
-                assert("connfd < 0");
                 throw;
             }
 
@@ -89,13 +88,31 @@ void Server::start() {
                 //TODO handler
                 n = recv(sockfd, m_buffer.get(), sizeof(int), 0);
                 if (n == -1) {
+                    printf("n == -1\n");
                     throw;
                 }
                 if (n == 0) {
                     close(clients[i].fd);
+                    auto value = m_sockMap.find(sockfd);
+                    if (value != m_sockMap.end()) {
+                        uint roomID = value->second.roomID;
+                        uint clientID = value->second.clientID;
+                        Room* room = m_roomList.get(roomID);
+
+                        room->removePlayer(clientID);
+                        // Broadcast to others in room
+                        network::RoomInfoChanged roomInfoChangedMessage{};
+                        room->serializeToRoomInfo(*roomInfoChangedMessage.mutable_new_room_info());
+
+                        for (const auto& [playerID, player] : *room) {
+                            sendMessage(player.sockfd(), network::MessageType::RoomInfoChanged, roomInfoChangedMessage);
+                        }
+                    }
                     clients[i].fd = -1;
+
                     continue;
                 }
+
                 IPEndpoint client{clients_addr[i]};
                 printf("Received %ld byte packet: %s:%d buffer\n", n, client.addressAsStr(), client.port());
                 int* length = (int*)m_buffer.get();
@@ -103,11 +120,13 @@ void Server::start() {
 
                 printf("receiving %ld bytes\n", n);
                 if (n == -1) {
+                    printf("n == -1\n");
                     throw;
                 }
                 if (n == 0) {
                     close(clients[i].fd);
                     clients[i].fd = -1;
+                    continue;
                 }
                 handleMessage(sockfd, m_buffer.get(), n, client);
             }
@@ -208,6 +227,10 @@ void Server::onCreateRoom(int sockfd, const network::CreateRoomRequest& request,
         sendMessage(sockfd, network::MessageType::CreateRoomResponse, response);
         return;
     }
+    sockMap value;
+    value.clientID = clientID;
+    value.roomID = roomID;
+    m_sockMap.insert({sockfd, value});
 
     printf("Creating room: roomID %ld clientID %d\n", roomID, clientID);
     auto& room = m_roomVector.emplace_back(std::make_unique<game::GameServer>(roomID, BASEPORT + roomID + 1));
@@ -240,6 +263,12 @@ void Server::onJoinRoom(int sockfd, const network::JoinRoomRequest& request, con
         sendMessage(sockfd, network::MessageType::JoinRoomResponse, response);
         return;
     }
+    if (m_roomVector[roomID].get()->getPlayingStatus() == true) {
+        printf("Room %d is currently playing, can't join\n");
+        response.set_success(false);
+        sendMessage(sockfd, network::MessageType::JoinRoomResponse, response);
+        return;
+    }
 
     // Add player to room
     Player player{request.client_info().name(), client, sockfd};
@@ -251,6 +280,10 @@ void Server::onJoinRoom(int sockfd, const network::JoinRoomRequest& request, con
         sendMessage(sockfd, network::MessageType::JoinRoomResponse, response);
         return;
     }
+    sockMap value;
+    value.clientID = clientID;
+    value.roomID = roomID;
+    m_sockMap.insert({sockfd, value});
 
     response.set_success(true);
     network::ClientIdentity* clientIdentity = response.mutable_assigned_identity();
@@ -292,6 +325,7 @@ void Server::onLeaveRoom(int sockfd, const network::LeaveRoomRequest& request, c
     }
 
     room->removePlayer(clientID);
+    m_sockMap.erase(sockfd);
 
     response.set_success(true);
     sendMessage(sockfd, network::MessageType::LeaveRoomResponse, response);

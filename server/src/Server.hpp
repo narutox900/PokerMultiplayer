@@ -4,12 +4,18 @@
 #include <stack>
 #include <thread>
 #include <vector>
+#include <unordered_map>
 
 #include "./game/GameServer.hpp"
 #include "./utils/ReusableIdList.hpp"
 #include "MessageType.hpp"
 #include "Room.hpp"
 #include "TCPSocket.hpp"
+
+struct sockMap {
+    int roomID;
+    int clientID;
+};
 
 class Server {
    private:
@@ -19,6 +25,7 @@ class Server {
 
     TCPSocket m_socket;
     std::vector<std::unique_ptr<game::GameServer>> m_roomVector;
+    std::unordered_map<int,sockMap> m_sockMap;
 
    public:
     Server(uint16_t port = 5000, int maxRoomCount = 4, size_t messageBufferSize = 1024);

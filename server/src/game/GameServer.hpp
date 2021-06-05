@@ -25,6 +25,7 @@ class GameServer {
     std::unique_ptr<uint8_t[]> m_buffer;
     int m_ownerID;
     Game gameInstance;
+    bool m_isPlaying;
 
     TCPSocket m_socket;
     std::thread m_thread;
@@ -38,6 +39,7 @@ class GameServer {
     void start();
     void wait();
     bool removePlayer(int id);
+    bool getPlayingStatus();
 
    private:
     void broadcastBetTurnMessage(int id, int currentPool, int amount, int balance);
