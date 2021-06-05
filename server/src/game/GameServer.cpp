@@ -185,7 +185,7 @@ void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, c
         game::StartGameResponse response{};
 
         response.set_dealer_id(m_ownerID);
-
+        int count =0;
         for (int i = 0; i < g_maxPlayerCount; ++i) {
             if (m_playerInfoList[i].id == -1) continue;
             if (m_playerInfoList[i].balance < 2 * g_baseBetValue) {
@@ -198,9 +198,9 @@ void GameServer::handleMessage(int sockfd, const uint8_t* buffer, size_t size, c
             player->set_id(m_playerInfoList[i].id);
             player->set_balance(m_playerInfoList[i].balance);
             player->set_status(m_playerInfoList[i].status);
-            gameInstance.m_activePlayerCount++;
+            count++;
         }
-        if (gameInstance.m_activePlayerCount < 2) {
+        if (count < 2) {
             response.set_success(false);
         }
         response.set_success(true);
@@ -220,7 +220,7 @@ void GameServer::startGameInstance() {
     int firstID = m_ownerID;
     // All people bet the base value
     for (int i = 0; i < g_maxPlayerCount; ++i) {
-        if (m_playerInfoList[i].id != -1) {
+        if (m_playerInfoList[i].id != -1 && m_playerInfoList[i].status == PLAYING) {
             gameInstance.dealPlayerCards(i);
             // send  cards info to player
             Card card0 = gameInstance.playerHands[i].cards[0];
@@ -235,6 +235,7 @@ void GameServer::startGameInstance() {
             printf("Sending deal card message to player %d\n", i);
             sendMessage(m_playerInfoList[i].endpoint, game::MessageType::DealCards, dealCard, m_playerInfoList[i].sockfd);
             // default bet amount
+            gameInstance.m_activePlayerCount++;
             m_playerInfoList[i].balance -= g_baseBetValue;
             m_playerInfoList[i].currentBet = g_baseBetValue;
             gameInstance.m_pool += g_baseBetValue;

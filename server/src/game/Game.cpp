@@ -275,6 +275,7 @@ int Game::getResult() {
             maxID = i;
         }
     }
+    (*m_playerInfoList)[maxID].balance+= m_pool;
     return maxID;
 }
 }  // namespace game
