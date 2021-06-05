@@ -146,7 +146,7 @@ void GameServer::startGameServer() {
                     throw;
                 }
                 if (n == 0) {
-                    for (int i =0 ;i <g_maxPlayerCount; ++i) {
+                    for (int i = 0; i < g_maxPlayerCount; ++i) {
                         if (m_playerInfoList[i].sockfd == sockfd) {
                             removePlayer(i);
                             break;
@@ -248,7 +248,7 @@ void GameServer::startGameInstance() {
     recvBetResponseMessage(currentID);
     int phase = 0;
     gameInstance.m_endTurnID = currentID;
-    while (1) {
+    while (gameInstance.m_activePlayerCount > 1) {
         currentID++;
         // circular count
         if (currentID >= g_maxPlayerCount) {
@@ -262,13 +262,14 @@ void GameServer::startGameInstance() {
         broadcastBetTurnMessage(currentID, gameInstance.m_pool, gameInstance.m_currentBet - m_playerInfoList[currentID].currentBet, m_playerInfoList[currentID].balance);
         recvBetResponseMessage(currentID);
     }
-    sendEndRoundMessage(gameInstance.m_pool);
-    phase++;
-    // Deal community card
-    dealCommunityCard(phase);
-
+    if (gameInstance.m_activePlayerCount > 1) {
+        sendEndRoundMessage(gameInstance.m_pool);
+        phase++;
+        // Deal community card
+        dealCommunityCard(phase);
+    }
     // phase 2 3 4 is the same
-    while (1) {
+    while (gameInstance.m_activePlayerCount > 1) {
         if (phase == 5) break;
         gameInstance.m_currentBet = 0;
         // one time for the first player
@@ -279,7 +280,7 @@ void GameServer::startGameInstance() {
         }
         // while loop for the rest
         currentID = firstID;
-        while (1) {
+        while (gameInstance.m_activePlayerCount > 1) {
             currentID++;
             // circular count
             if (currentID >= g_maxPlayerCount) {
