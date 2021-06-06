@@ -200,6 +200,7 @@ void Server::onQueryRoomInfo(int sockfd, const network::QueryRoomInfoRequest& re
 
         network::RoomInfo* roomInfo = response.add_rooms();
         roomInfo->set_id(id);
+        roomInfo->set_is_playing(m_roomVector[id].get()->getPlayingStatus());
         room.serializeToRoomInfo(*roomInfo);
     }
 

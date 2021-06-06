@@ -386,12 +386,13 @@ class RoomInfo PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kClientsFieldNumber = 4,
+    kClientsFieldNumber = 5,
     kIdFieldNumber = 1,
     kOwnerIdFieldNumber = 2,
     kIsFullFieldNumber = 3,
+    kIsPlayingFieldNumber = 4,
   };
-  // repeated .network.ClientInfo clients = 4;
+  // repeated .network.ClientInfo clients = 5;
   int clients_size() const;
   private:
   int _internal_clients_size() const;
@@ -436,6 +437,15 @@ class RoomInfo PROTOBUF_FINAL :
   void _internal_set_is_full(bool value);
   public:
 
+  // bool is_playing = 4;
+  void clear_is_playing();
+  bool is_playing() const;
+  void set_is_playing(bool value);
+  private:
+  bool _internal_is_playing() const;
+  void _internal_set_is_playing(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:network.RoomInfo)
  private:
   class _Internal;
@@ -447,6 +457,7 @@ class RoomInfo PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::uint32 id_;
   ::PROTOBUF_NAMESPACE_ID::uint32 owner_id_;
   bool is_full_;
+  bool is_playing_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_network_2eproto;
 };
@@ -2368,7 +2379,27 @@ inline void RoomInfo::set_is_full(bool value) {
   // @@protoc_insertion_point(field_set:network.RoomInfo.is_full)
 }
 
-// repeated .network.ClientInfo clients = 4;
+// bool is_playing = 4;
+inline void RoomInfo::clear_is_playing() {
+  is_playing_ = false;
+}
+inline bool RoomInfo::_internal_is_playing() const {
+  return is_playing_;
+}
+inline bool RoomInfo::is_playing() const {
+  // @@protoc_insertion_point(field_get:network.RoomInfo.is_playing)
+  return _internal_is_playing();
+}
+inline void RoomInfo::_internal_set_is_playing(bool value) {
+  
+  is_playing_ = value;
+}
+inline void RoomInfo::set_is_playing(bool value) {
+  _internal_set_is_playing(value);
+  // @@protoc_insertion_point(field_set:network.RoomInfo.is_playing)
+}
+
+// repeated .network.ClientInfo clients = 5;
 inline int RoomInfo::_internal_clients_size() const {
   return clients_.size();
 }

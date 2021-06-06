@@ -35,7 +35,8 @@ constexpr RoomInfo::RoomInfo(
   : clients_()
   , id_(0u)
   , owner_id_(0u)
-  , is_full_(false){}
+  , is_full_(false)
+  , is_playing_(false){}
 struct RoomInfoDefaultTypeInternal {
   constexpr RoomInfoDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -215,6 +216,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_network_2eproto::offsets[] PRO
   PROTOBUF_FIELD_OFFSET(::network::RoomInfo, id_),
   PROTOBUF_FIELD_OFFSET(::network::RoomInfo, owner_id_),
   PROTOBUF_FIELD_OFFSET(::network::RoomInfo, is_full_),
+  PROTOBUF_FIELD_OFFSET(::network::RoomInfo, is_playing_),
   PROTOBUF_FIELD_OFFSET(::network::RoomInfo, clients_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::network::ClientIdentity, _internal_metadata_),
@@ -297,18 +299,18 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_network_2eproto::offsets[] PRO
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::network::ClientInfo)},
   { 7, -1, sizeof(::network::RoomInfo)},
-  { 16, -1, sizeof(::network::ClientIdentity)},
-  { 23, -1, sizeof(::network::QueryRoomInfoRequest)},
-  { 29, -1, sizeof(::network::QueryRoomInfoResponse)},
-  { 35, -1, sizeof(::network::CreateRoomRequest)},
-  { 41, -1, sizeof(::network::CreateRoomResponse)},
-  { 48, -1, sizeof(::network::JoinRoomRequest)},
-  { 55, -1, sizeof(::network::JoinRoomResponse)},
-  { 62, -1, sizeof(::network::LeaveRoomRequest)},
-  { 68, -1, sizeof(::network::LeaveRoomResponse)},
-  { 74, -1, sizeof(::network::RoomInfoChanged)},
-  { 80, -1, sizeof(::network::StartGameRequest)},
-  { 86, -1, sizeof(::network::GameCreated)},
+  { 17, -1, sizeof(::network::ClientIdentity)},
+  { 24, -1, sizeof(::network::QueryRoomInfoRequest)},
+  { 30, -1, sizeof(::network::QueryRoomInfoResponse)},
+  { 36, -1, sizeof(::network::CreateRoomRequest)},
+  { 42, -1, sizeof(::network::CreateRoomResponse)},
+  { 49, -1, sizeof(::network::JoinRoomRequest)},
+  { 56, -1, sizeof(::network::JoinRoomResponse)},
+  { 63, -1, sizeof(::network::LeaveRoomRequest)},
+  { 69, -1, sizeof(::network::LeaveRoomResponse)},
+  { 75, -1, sizeof(::network::RoomInfoChanged)},
+  { 81, -1, sizeof(::network::StartGameRequest)},
+  { 87, -1, sizeof(::network::GameCreated)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -330,32 +332,32 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_network_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\rnetwork.proto\022\007network\"&\n\nClientInfo\022\n"
-  "\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\"_\n\010RoomInfo\022\n\n\002"
+  "\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\"s\n\010RoomInfo\022\n\n\002"
   "id\030\001 \001(\r\022\020\n\010owner_id\030\002 \001(\r\022\017\n\007is_full\030\003 "
-  "\001(\010\022$\n\007clients\030\004 \003(\0132\023.network.ClientInf"
-  "o\"4\n\016ClientIdentity\022\017\n\007room_id\030\001 \001(\r\022\021\n\t"
-  "client_id\030\002 \001(\r\"(\n\024QueryRoomInfoRequest\022"
-  "\020\n\010not_full\030\001 \001(\010\"9\n\025QueryRoomInfoRespon"
-  "se\022 \n\005rooms\030\001 \003(\0132\021.network.RoomInfo\"=\n\021"
-  "CreateRoomRequest\022(\n\013client_info\030\001 \001(\0132\023"
-  ".network.ClientInfo\"Y\n\022CreateRoomRespons"
-  "e\022\017\n\007success\030\001 \001(\010\0222\n\021assigned_identity\030"
-  "\002 \001(\0132\027.network.ClientIdentity\"L\n\017JoinRo"
-  "omRequest\022(\n\013client_info\030\001 \001(\0132\023.network"
-  ".ClientInfo\022\017\n\007room_id\030\002 \001(\r\"W\n\020JoinRoom"
-  "Response\022\017\n\007success\030\001 \001(\010\0222\n\021assigned_id"
-  "entity\030\002 \001(\0132\027.network.ClientIdentity\"D\n"
-  "\020LeaveRoomRequest\0220\n\017client_identity\030\001 \001"
-  "(\0132\027.network.ClientIdentity\"$\n\021LeaveRoom"
-  "Response\022\017\n\007success\030\001 \001(\010\";\n\017RoomInfoCha"
-  "nged\022(\n\rnew_room_info\030\001 \001(\0132\021.network.Ro"
-  "omInfo\"#\n\020StartGameRequest\022\017\n\007success\030\001 "
-  "\001(\010\"/\n\013GameCreated\022\022\n\nip_address\030\001 \001(\r\022\014"
-  "\n\004port\030\002 \001(\rb\006proto3"
+  "\001(\010\022\022\n\nis_playing\030\004 \001(\010\022$\n\007clients\030\005 \003(\013"
+  "2\023.network.ClientInfo\"4\n\016ClientIdentity\022"
+  "\017\n\007room_id\030\001 \001(\r\022\021\n\tclient_id\030\002 \001(\r\"(\n\024Q"
+  "ueryRoomInfoRequest\022\020\n\010not_full\030\001 \001(\010\"9\n"
+  "\025QueryRoomInfoResponse\022 \n\005rooms\030\001 \003(\0132\021."
+  "network.RoomInfo\"=\n\021CreateRoomRequest\022(\n"
+  "\013client_info\030\001 \001(\0132\023.network.ClientInfo\""
+  "Y\n\022CreateRoomResponse\022\017\n\007success\030\001 \001(\010\0222"
+  "\n\021assigned_identity\030\002 \001(\0132\027.network.Clie"
+  "ntIdentity\"L\n\017JoinRoomRequest\022(\n\013client_"
+  "info\030\001 \001(\0132\023.network.ClientInfo\022\017\n\007room_"
+  "id\030\002 \001(\r\"W\n\020JoinRoomResponse\022\017\n\007success\030"
+  "\001 \001(\010\0222\n\021assigned_identity\030\002 \001(\0132\027.netwo"
+  "rk.ClientIdentity\"D\n\020LeaveRoomRequest\0220\n"
+  "\017client_identity\030\001 \001(\0132\027.network.ClientI"
+  "dentity\"$\n\021LeaveRoomResponse\022\017\n\007success\030"
+  "\001 \001(\010\";\n\017RoomInfoChanged\022(\n\rnew_room_inf"
+  "o\030\001 \001(\0132\021.network.RoomInfo\"#\n\020StartGameR"
+  "equest\022\017\n\007success\030\001 \001(\010\"/\n\013GameCreated\022\022"
+  "\n\nip_address\030\001 \001(\r\022\014\n\004port\030\002 \001(\rb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_network_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_network_2eproto = {
-  false, false, 900, descriptor_table_protodef_network_2eproto, "network.proto", 
+  false, false, 920, descriptor_table_protodef_network_2eproto, "network.proto", 
   &descriptor_table_network_2eproto_once, nullptr, 0, 14,
   schemas, file_default_instances, TableStruct_network_2eproto::offsets,
   file_level_metadata_network_2eproto, file_level_enum_descriptors_network_2eproto, file_level_service_descriptors_network_2eproto,
@@ -615,16 +617,16 @@ RoomInfo::RoomInfo(const RoomInfo& from)
       clients_(from.clients_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&id_, &from.id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&is_full_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(is_full_));
+    static_cast<size_t>(reinterpret_cast<char*>(&is_playing_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(is_playing_));
   // @@protoc_insertion_point(copy_constructor:network.RoomInfo)
 }
 
 void RoomInfo::SharedCtor() {
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&id_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&is_full_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(is_full_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&is_playing_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(is_playing_));
 }
 
 RoomInfo::~RoomInfo() {
@@ -655,8 +657,8 @@ void RoomInfo::Clear() {
 
   clients_.Clear();
   ::memset(&id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&is_full_) -
-      reinterpret_cast<char*>(&id_)) + sizeof(is_full_));
+      reinterpret_cast<char*>(&is_playing_) -
+      reinterpret_cast<char*>(&id_)) + sizeof(is_playing_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -688,16 +690,23 @@ const char* RoomInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::i
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // repeated .network.ClientInfo clients = 4;
+      // bool is_playing = 4;
       case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          is_playing_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // repeated .network.ClientInfo clients = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 42)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_clients(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<42>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -746,12 +755,18 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(3, this->_internal_is_full(), target);
   }
 
-  // repeated .network.ClientInfo clients = 4;
+  // bool is_playing = 4;
+  if (this->is_playing() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(4, this->_internal_is_playing(), target);
+  }
+
+  // repeated .network.ClientInfo clients = 5;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_clients_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(4, this->_internal_clients(i), target, stream);
+      InternalWriteMessage(5, this->_internal_clients(i), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -770,7 +785,7 @@ size_t RoomInfo::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .network.ClientInfo clients = 4;
+  // repeated .network.ClientInfo clients = 5;
   total_size += 1UL * this->_internal_clients_size();
   for (const auto& msg : this->clients_) {
     total_size +=
@@ -793,6 +808,11 @@ size_t RoomInfo::ByteSizeLong() const {
 
   // bool is_full = 3;
   if (this->is_full() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // bool is_playing = 4;
+  if (this->is_playing() != 0) {
     total_size += 1 + 1;
   }
 
@@ -837,6 +857,9 @@ void RoomInfo::MergeFrom(const RoomInfo& from) {
   if (from.is_full() != 0) {
     _internal_set_is_full(from._internal_is_full());
   }
+  if (from.is_playing() != 0) {
+    _internal_set_is_playing(from._internal_is_playing());
+  }
 }
 
 void RoomInfo::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -862,8 +885,8 @@ void RoomInfo::InternalSwap(RoomInfo* other) {
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   clients_.InternalSwap(&other->clients_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(RoomInfo, is_full_)
-      + sizeof(RoomInfo::is_full_)
+      PROTOBUF_FIELD_OFFSET(RoomInfo, is_playing_)
+      + sizeof(RoomInfo::is_playing_)
       - PROTOBUF_FIELD_OFFSET(RoomInfo, id_)>(
           reinterpret_cast<char*>(&id_),
           reinterpret_cast<char*>(&other->id_));

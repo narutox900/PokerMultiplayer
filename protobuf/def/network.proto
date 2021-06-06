@@ -11,7 +11,8 @@ message RoomInfo {
     uint32 id = 1;
     uint32 owner_id = 2;
     bool is_full = 3;
-    repeated ClientInfo clients = 4;
+    bool is_playing = 4;
+    repeated ClientInfo clients = 5;
 }
 
 message ClientIdentity {
