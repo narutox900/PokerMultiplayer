@@ -1,0 +1,11 @@
+﻿  client_sock.cpp
+d:\game\unity\client socket dll\client_sock.cpp(18): warning C4273: 'Connect': inconsistent dll linkage
+  d:\game\unity\client socket dll\client_sock.h(19): note: see previous definition of 'Connect'
+d:\game\unity\client socket dll\client_sock.cpp(43): warning C4273: 'Send': inconsistent dll linkage
+  d:\game\unity\client socket dll\client_sock.h(20): note: see previous definition of 'Send'
+d:\game\unity\client socket dll\client_sock.cpp(55): warning C4273: 'Receive': inconsistent dll linkage
+  d:\game\unity\client socket dll\client_sock.h(21): note: see previous definition of 'Receive'
+d:\game\unity\client socket dll\client_sock.cpp(67): warning C4273: 'Close': inconsistent dll linkage
+  d:\game\unity\client socket dll\client_sock.h(22): note: see previous definition of 'Close'
+     Creating library D:\Game\unity\poker multiplayer game\x64\Debug\client_sock.lib and object D:\Game\unity\poker multiplayer game\x64\Debug\client_sock.exp
+  Client Socket DLL.vcxproj -> D:\Game\unity\poker multiplayer game\x64\Debug\client_sock.dll

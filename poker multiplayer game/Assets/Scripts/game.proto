@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package game;
+
+message ProtoCard {
+    uint32 value = 1;
+    uint32 suit = 2;
+}
+
+message ProtoPlayer {
+    uint32 id = 1;
+    uint32 balance = 2;
+    int32 status = 3; // PLAYING = 1 NOTPLAYING = -1
+}
+
+message StartGameRequest {
+    uint32 id = 1;
+    bool success = 2; //   SET THIS TO TRUE
+}
+
+// Server-side message
+// No confirmation
+message StartGameResponse {
+    uint32 dealer_id = 1;
+    // uint32 big_blind_id = 2;
+    // uint32 small_blind_id = 3;
+    repeated ProtoPlayer players = 2;
+    bool success = 3; // if can't start success = false
+}
+
+// Card value from 2 - 14  11-12-13-14: J-Q-K-A
+// Card suit from 0 - 3
+// No confirmation
+message DealCards {
+    repeated ProtoCard cards = 1;
+}
+
+//No confirmation
+message DealCommunityCards {
+    uint32 phase = 1; 
+    repeated ProtoCard cards = 2;
+}
+
+
+message Result {
+    //Only send the cards of the players that are still playing
+    message EndPlayer {
+        ProtoPlayer player = 1;
+        repeated ProtoCard cards = 2;
+    }
+    repeated EndPlayer end_players = 1;
+    uint32 winner_id = 2;
+    uint32 prize = 3;
+}
+
+
+//To every clients
+//No need confirmation
+message BetTurn {
+    uint32 player_id = 1;
+    uint32 current_pool = 2;
+    uint32 amount = 3; // The least amount of money needed to bet
+    uint32 balance = 4; // That player's balance
+}
+
+//From the current player's turn to server
+message BetTurnResponse {
+    uint32 player_id = 1;
+    uint32 action = 2; // in the enum file //CALL = 0 BET = 1 FOLD =2
+    uint32 amount = 3; // bet amount
+}
+
+// To all clients
+// No need confirmation
+message DoneBet {
+    uint32 player_id = 1; //id of player who just bet
+    uint32 bet_amount = 2; // Total amount of player's bet in that turn
+    uint32 player_balance = 3; // that player's money left
+    uint32 action = 4;
+}
+
+//broadcast to all clients
+message EndRound {
+    uint32 total_amount = 1; // total bet amount on board
+}

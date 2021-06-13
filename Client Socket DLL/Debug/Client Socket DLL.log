@@ -1,0 +1,4 @@
+﻿  client_sock.cpp
+d:\game\unity\client socket dll\client_sock.cpp(2): warning C4005: 'UNICODE': macro redefinition
+  d:\game\unity\client socket dll\client_sock.cpp: note: see previous definition of 'UNICODE'
+d:\game\unity\client socket dll\client_sock.cpp(71): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
